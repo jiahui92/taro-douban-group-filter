@@ -1,5 +1,5 @@
 const config = {
-  projectName: 'myApp',
+  projectName: 'douban-group-filter',
   date: '2019-9-5',
   designWidth: 750,
   deviceRatio: {
@@ -70,6 +70,7 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
+    esnextModules: ['taro-ui'],
     module: {
       postcss: {
         autoprefixer: {
