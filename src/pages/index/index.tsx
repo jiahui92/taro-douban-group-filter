@@ -105,7 +105,7 @@ class Index extends Component {
         const isImportant = importantList.some(fn);
         const an = item.authorName;
         // 是否“疑似中介”: 发帖次数大于2 或者 名称是“豆友xxx”
-        const isAgent = countObj[an] > 2 || an.indexOf(/^豆友\n+$/) !== -1;
+        const isAgent = countObj[an] > 2 || /^豆友\d+$/.test(an);
         const contentId = item.link.match(/\d+/)[0];
         const xcxLink = `/pages/content/index?cId=${contentId}`
         const clArr: string[] = []

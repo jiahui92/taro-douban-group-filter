@@ -24,5 +24,40 @@
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"libVersion": "2.5.2",
-	"condition": {}
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": 1,
+			"list": [
+				{
+					"id": -1,
+					"name": "pages/content/index",
+					"pathName": "pages/content/index",
+					"query": "cId=151486456",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/index/index",
+					"pathName": "pages/index/index",
+					"query": "",
+					"scene": null
+				}
+			]
+		}
+	}
 }

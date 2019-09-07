@@ -22,3 +22,5 @@ declare const process: {
     [key: string]: any;
   }
 }
+
+declare var wx: any;
