@@ -2,11 +2,31 @@ import Taro from '@tarojs/taro'
 import { parse, HTMLElement } from 'node-html-parser'
 
 /**
+ * 包含错误兜底和提示的Taro.request函数
+ */
+export function request (param: Taro.request.Param) {
+
+  // 兜底错误处理
+  function fail ({ message }) {
+    Taro.hideLoading()
+    Taro.showToast({ icon: 'none', mask: true, title: message })
+    throw new Error(message)
+  }
+
+  return Taro.request(param).then(res => {
+    if (res.statusCode !== 200) {
+      throw new Error(`请求发生错误（statusCode为${res.statusCode}）`)
+    }
+    return res
+  }).catch((e) => fail(e))
+}
+
+/**
  * 爬虫并返回解析后的dom
  * @param url 
  */
 export function crawlToDom (url: string) {
-  return Taro.request({ url }).then(res => {
+  return request({ url }).then((res: any) => {
     return parse(res.data) as HTMLElement
   })
 }
@@ -26,7 +46,9 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
       clearInterval(timer)
       return
     }
-    crawlToDom(urlArr[i]).then(root => callback(root, i++))
+    crawlToDom(urlArr[i])
+      .then(root => callback(root, i++))
+      .catch(() => clearInterval(timer))
   }
 
   fn() // 先自执行一遍
@@ -34,5 +56,5 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
 }
 
 export default {
-  crawlToDom, crawlToDomOnBatch
+  request, crawlToDom, crawlToDomOnBatch
 }

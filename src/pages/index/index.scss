@@ -1,0 +1,42 @@
+@import '../../custom-theme.scss';
+
+.page-index {
+
+  .search-result-tip {
+    display: flex;
+    flex-flow: row-reverse;
+    font-size: 0.7rem;
+    color: grey;
+    margin: 0.7rem 1rem 1.5rem;
+  }
+
+  .list {
+    margin: 0.5rem;
+    min-height: 50vh;
+
+    .item {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    navigator {
+      display: inline-block;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-decoration: none;
+
+      &.important {
+        color: $color-brand-dark;
+        font-weight: bold;
+      }
+
+      &.visited {
+        color: #ccc;
+      }
+    }
+  }
+}

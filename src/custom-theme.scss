@@ -2,3 +2,17 @@
 $color-brand: #0ebd13;
 $color-brand-light: #4ace4e;
 $color-brand-dark: #0b970f;
+
+/* 覆盖AtTabs组件样式 */
+.at-tabs {
+  border-bottom: 4px solid $color-brand;
+  // border-left: none;
+  // border-right: none;
+}
+.at-tabs__item {
+  font-size: 0.7rem !important;
+}
+.at-tabs__item--active {
+  color: white !important;
+  background: $color-brand;
+}
