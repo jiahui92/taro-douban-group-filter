@@ -170,8 +170,8 @@ class Index extends Component {
 
     const list = this.getList()
     // 帖子列表html
-    const listHtml = list.map((t, i) => (
-      <View key={i} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
+    const listHtml = list.map(t => (
+      <View key={t.cId} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
         { t.isAgent ? <AtIcon value="blocked" /> : null }
         <Navigator url={t.xcxLink} className={t.className}>
           { t.title }
