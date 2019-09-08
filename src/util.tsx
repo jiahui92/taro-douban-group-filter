@@ -40,13 +40,13 @@ export function crawlToDom (url: string) {
  */
 export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = () => {}, delay: number = 1000) {
   let i = 0
+  let count = 0 // 接口不一定会按顺序执行，甚至有时候是并行的，所以不能够返回i给callback，而是依赖count来计算进度
   let timer
 
   const fn = () => {
 
-    const index = i
-    crawlToDom(urlArr[index])
-      .then(root => callback(root, index))
+    crawlToDom(urlArr[i])
+      .then(root => callback(root, count++))
       .catch(() => clearInterval(timer))
 
     if (i < urlArr.length - 1) {
