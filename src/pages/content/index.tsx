@@ -29,6 +29,7 @@ class Index extends Component {
     util.crawlToDom(`https://m.douban.com/group/topic/${this.$router.params.cId}/`).then(root => {
 
       Taro.hideLoading()
+
       const title = (root.querySelector('.header .title') || {}).text
       const authorName = (root.querySelector('.info .name') || {}).text
       const timeStr = (root.querySelector('.info .timestamp') || {}).text
@@ -36,9 +37,8 @@ class Index extends Component {
       // 评论内容
       let replyStr = ''
       root.querySelectorAll('#reply-list li').map(t => {
-          replyStr += `<div>${t.querySelector('.user-name').text} : ${t.querySelector('.content').text}</div>`
+          replyStr += `<div><b>${t.querySelector('.user-name').text}</b>： ${t.querySelector('.content').text}</div>`
       })
-      
 
       contentStr = `
         <h3>${title}</h3>
