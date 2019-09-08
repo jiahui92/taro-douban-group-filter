@@ -7,10 +7,11 @@ import { parse, HTMLElement } from 'node-html-parser'
 export function request (param: Taro.request.Param) {
 
   // 兜底错误处理
-  function fail ({ message }) {
+  function fail (e) {
+    const msg = e.message || e.errMsg || '网络错误，请稍后再试' // errMsg是Taro抛出来的
     Taro.hideLoading()
-    Taro.showToast({ icon: 'none', mask: true, title: message })
-    throw new Error(message)
+    Taro.showToast({ icon: 'none', mask: true, title: msg })
+    throw new Error(msg)
   }
 
   return Taro.request(param).then(res => {
@@ -18,7 +19,7 @@ export function request (param: Taro.request.Param) {
       throw new Error(`请求发生错误（statusCode为${res.statusCode}）`)
     }
     return res
-  }).catch((e) => fail(e))
+  }).catch(e => fail(e))
 }
 
 /**
@@ -42,13 +43,18 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
   let timer
 
   const fn = () => {
-    if (i >= urlArr.length) {
-      clearInterval(timer)
-      return
-    }
-    crawlToDom(urlArr[i])
-      .then(root => callback(root, i++))
+
+    const index = i
+    crawlToDom(urlArr[index])
+      .then(root => callback(root, index))
       .catch(() => clearInterval(timer))
+
+    if (i < urlArr.length - 1) {
+      i++
+    } else {
+      clearInterval(timer)
+    }
+
   }
 
   fn() // 先自执行一遍

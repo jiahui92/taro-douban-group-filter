@@ -24,7 +24,11 @@ class Index extends Component {
 
   componentDidMount () {
 
+    Taro.showLoading({ title: '加载中' })
+
     util.crawlToDom(`https://m.douban.com/group/topic/${this.$router.params.cId}/`).then(root => {
+
+      Taro.hideLoading()
       const title = (root.querySelector('.header .title') || {}).text
       const authorName = (root.querySelector('.info .name') || {}).text
       const timeStr = (root.querySelector('.info .timestamp') || {}).text
@@ -62,7 +66,8 @@ class Index extends Component {
       success: () => {
         Taro.showToast({
           title: '豆瓣链接已复制成功，请粘贴到浏览器打开',
-          icon: 'none'
+          icon: 'none',
+          duration: 3000
         })
       }
     })
