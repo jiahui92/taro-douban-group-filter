@@ -32,6 +32,7 @@ class Index extends Component {
   }
 
   componentDidMount () {
+    // util.request({url: 'https://douban.uieee.com/v2/group/CDzufang/topics?start=0&count=100'})})
     this.fetchList()
   }
 
@@ -104,8 +105,8 @@ class Index extends Component {
         // 重点关注
         const isImportant = importantList.some(fn);
         const an = item.authorName;
-        // 是否“疑似中介”: 发帖次数大于2 或者 名称是“豆友xxx”
-        const isAgent = countObj[an] > 2 || /^豆友\d+$/.test(an);
+        // 是否“疑似中介”: 发帖次数大于2 或者 名称是“豆友xxx”和手机号
+        const isAgent = countObj[an] > 2 || /^豆友\d+$/.test(an) || /^\d{11}$/.test(an);
         const contentId = item.link.match(/\d+/)[0];
         const xcxLink = `/pages/content/index?cId=${contentId}`
         const clArr: string[] = []
