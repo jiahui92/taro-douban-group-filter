@@ -4,7 +4,7 @@
 	"description": "douban-group-filter",
 	"appid": "wxdd21bb813678f478",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
@@ -23,7 +23,7 @@
 	"compileType": "miniprogram",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"libVersion": "2.5.2",
+	"libVersion": "2.2.3",
 	"condition": {
 		"search": {
 			"current": -1,
