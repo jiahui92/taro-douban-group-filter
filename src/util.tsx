@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro'
-import { parse, HTMLElement } from 'node-html-parser'
+import { parse, HTMLElement } from 'node-html-parser/dist/umd/index.js'
 
 /**
  * 包含错误兜底和提示的Taro.request函数
