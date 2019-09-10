@@ -10,7 +10,7 @@ import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 import GoTop from '../../components/GoTop'
 
-const MAX_PAGE = 1 // 最多加载多少页
+const MAX_PAGE = 10 // 最多加载多少页
 const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']
 
 @inject('counterStore')
@@ -146,7 +146,7 @@ class Index extends Component {
     }
 
     // 重点关注的置顶
-    return cList.sort((a, b) => a.isImportant > b.isImportant ? -1 : 1);
+    return lodash.sortBy(cList, (o) => o.isImportant ? 0 : 1) // 稳定排序
   }
 
   // Input筛选组件的通用props
@@ -187,10 +187,10 @@ class Index extends Component {
   render () {
     const { tabs, activeTab } = this.state
 
-    const list = this.getList()
+    const list = this.getList() // 正在加载时，不渲染列表
     // 帖子列表html
     const listHtml = list.map(t => (
-      <View key={t.cId} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
+      <View key={t.contentId} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
         <View className={t.className + ' title'}>{ t.title }</View>
         <View className='extra-info'>
           <View>{t.authorName}</View>
