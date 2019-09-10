@@ -12,20 +12,20 @@
 
 
 ## todo
+* 帮助说明：导入小组使用说明 、 显示中介规则
 * Input组件优化
-* 列表增加作者和发布时间
-* 导入小组使用说明 、 显示中介规则
-* 一键导入小组
-* 小组id显示为小组名称
 * MAX_PAGE等抽取到配置中，方便以后在设置中调整
-* 收藏
 * 返回顶部
 * 赞助
-* 中介过滤规则
-  * site:douban.com 18591619696
+* contentPage 增加复制App链接
+* 收藏
+
 * 爬虫优化，本地缓存
 * https://api.douban.com/v2/group/CDzufang/topics?start=0&count=100
-* contentPage 增加复制App链接
+* 小组id显示为小组名称
+* 一键导入小组
+* 中介过滤规则
+  * site:douban.com 18591619696
 
 
 ## 小程序的问题

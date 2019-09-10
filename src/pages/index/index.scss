@@ -2,9 +2,14 @@
 
 .page-index {
 
+  .btn-refresh {
+    display: inline-block;
+    color: $color-brand-dark;
+    text-decoration: underline;
+  }
+
   .search-result-tip {
-    display: flex;
-    flex-flow: row-reverse;
+    text-align: right;
     font-size: 0.7rem;
     color: grey;
     margin: 0.7rem 1rem 1.5rem;

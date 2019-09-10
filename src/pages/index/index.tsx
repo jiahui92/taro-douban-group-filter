@@ -8,9 +8,10 @@ import lodash from 'lodash'
 
 import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
+import GoTop from '../../components/GoTop'
 
-const MAX_PAGE = 10 // 最多加载多少页
-const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'cdzufang']
+const MAX_PAGE = 1 // 最多加载多少页
+const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']
 
 @inject('counterStore')
 @observer
@@ -39,7 +40,7 @@ class Index extends Component {
   fetchList = () => {
     const {cache, activeTab} = this.state
 
-    if (cache[activeTab]) return
+    if (cache[activeTab] && cache[activeTab].length) return
 
     const baseUrl = `https://www.douban.com/group/${activeTab}/discussion?start=`
     const urlArr = Array(MAX_PAGE).fill('').map((_t, i) => baseUrl +  i * 25)
@@ -86,6 +87,15 @@ class Index extends Component {
       })
 
     }, 1000)
+  }
+
+  // 刷新列表
+  onBtnRefresh = () => {
+    const {cache, activeTab} = this.state
+    cache[activeTab] = []
+    this.setState({cache}, () => {
+      this.fetchList()
+    })
   }
 
   // 根据importantList、blackList之类的配置重写计算list数组
@@ -205,17 +215,22 @@ class Index extends Component {
           <AtInput {...this.getInputProps('importantList')} title='置顶关键词' />
           <AtInput {...this.getInputProps('blackList')} title='屏蔽关键词' />
           <AtSwitch title='显示中介信息' color='#0ebd13' onChange={isShowAgent => this.setState({isShowAgent})} />
-          <View className='search-result-tip'>共有 {list.length} 个搜索结果</View>
+          <View className='search-result-tip'>
+            <View className='btn-refresh' onClick={this.onBtnRefresh}>点击刷新列表</View>
+            ，共有 {list.length} 个搜索结果
+          </View>
         </View>
 
         <AtTabs
-          scroll={tabs.length > 4}
+          scroll={tabs.length > 3}
           current={tabs.indexOf(activeTab)}
           tabList={tabs.map(title => ({title}))}
           onClick={this.handleTabClick}
         />
 
         <View className='list'>{listHtml}</View>
+
+        <GoTop />
 
       </View>
     )
