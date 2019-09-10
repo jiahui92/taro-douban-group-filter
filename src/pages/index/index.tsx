@@ -6,11 +6,11 @@ import { observer, inject } from '@tarojs/mobx'
 import util from '../../util'
 import lodash from 'lodash'
 
-import { View, Navigator } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 
 const MAX_PAGE = 10 // 最多加载多少页
-const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'CDzufang']
+const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'cdzufang']
 
 @inject('counterStore')
 @observer
@@ -62,7 +62,9 @@ class Index extends Component {
           title: $title.attributes.title,
           link: $title.attributes.href,
           authorName: $author.text,
-          authorLink: $author.attributes.href
+          authorLink: $author.attributes.href,
+          timeStr: item.querySelector('.time').text,
+          replyNum: Number(item.querySelectorAll('td')[2].text)
         })
       })
 
@@ -105,8 +107,12 @@ class Index extends Component {
         // 重点关注
         const isImportant = importantList.some(fn);
         const an = item.authorName;
-        // 是否“疑似中介”: 发帖次数大于2 或者 名称是“豆友xxx”和手机号
-        const isAgent = countObj[an] > 2 || /^豆友\d+$/.test(an) || /^\d{11}$/.test(an);
+        // 是否“疑似中介”
+        const isAgent = 
+          countObj[an] > 2 ||     // 发帖次数大于2
+          item.replyNum > 50 ||   // 回应数超过50
+          /^豆友\d+$/.test(an) || // 名称是“豆友xxx”
+          /[1]([3-9])[0-9]{9}/.test(an) // 名称包含手机号
         const contentId = item.link.match(/\d+/)[0];
         const xcxLink = `/pages/content/index?cId=${contentId}`
         const clArr: string[] = []
@@ -138,7 +144,7 @@ class Index extends Component {
     return {
       name: field,
       value: (this.state[field] || []).join(','),
-      placeholder: '请使用逗号分隔每个输入',
+      placeholder: '请使用逗号分隔多个输入',
       onChange: this.handleFieldChange.bind(this, field)
     }
   }
@@ -156,6 +162,8 @@ class Index extends Component {
   }
 
   handleNavigatorClick = (t) => {
+    Taro.navigateTo({url: t.xcxLink})
+
     const data = this.state.visitedContentIdArr
 
     data.push(t.contentId)
@@ -173,10 +181,19 @@ class Index extends Component {
     // 帖子列表html
     const listHtml = list.map(t => (
       <View key={t.cId} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
-        { t.isAgent ? <AtIcon value="blocked" /> : null }
-        <Navigator url={t.xcxLink} className={t.className}>
-          { t.title }
-        </Navigator>
+        <View className={t.className + ' title'}>{ t.title }</View>
+        <View className='extra-info'>
+          <View>{t.authorName}</View>
+          {
+            t.isAgent ? (
+              <View className='is-agent'>
+                <AtIcon value="blocked" size={16} />
+                疑似中介
+              </View>
+            ) : null
+          }
+          <View className='time'>{t.timeStr}</View>
+        </View>
       </View>
     ))
 

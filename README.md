@@ -22,7 +22,6 @@
 * 返回顶部
 * 赞助
 * 中介过滤规则
-  * 回应数大于50
   * site:douban.com 18591619696
 * 爬虫优化，本地缓存
 * https://api.douban.com/v2/group/CDzufang/topics?start=0&count=100

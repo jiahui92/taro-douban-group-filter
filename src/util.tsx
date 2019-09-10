@@ -45,15 +45,18 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
 
   const fn = () => {
 
-    crawlToDom(urlArr[i])
-      .then(root => callback(root, count++))
-      .catch(() => clearInterval(timer))
+    const url = urlArr[i]
 
-    if (i < urlArr.length - 1) {
+    if (i < urlArr.length) {
       i++
     } else {
       clearInterval(timer)
+      return
     }
+
+    crawlToDom(url)
+      .then(root => callback(root, count++))
+      .catch(() => clearInterval(timer))
 
   }
 

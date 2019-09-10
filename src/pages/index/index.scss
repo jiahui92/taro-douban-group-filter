@@ -11,16 +11,33 @@
   }
 
   .list {
-    margin: 0.5rem;
     min-height: 50vh;
 
     .item {
-      display: flex;
-      align-items: center;
-      margin-top: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid #eee;
+
+      .extra-info {
+        display: flex;
+        align-items: center;
+        font-size: 0.7rem;
+        color: #ccc;
+
+        view {
+          margin-right: 0.1rem;
+        }
+
+        .is-agent {
+          color: red;
+        }
+
+        .time {
+          margin-left: auto;
+        }
+      }
     }
 
-    navigator {
+    .title {
       display: inline-block;
       font-size: 0.9rem;
       white-space: nowrap;
