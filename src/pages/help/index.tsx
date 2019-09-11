@@ -30,6 +30,10 @@ class Page extends Component {
           <View>➣ 帖子回复数超过50</View>
         </AtCard>
 
+        <AtCard title='页面报错'>
+          当刷新太频繁时，偶尔会出现“request url”之类的报错，休息一会再试吧
+        </AtCard>
+
         <AtCard title='版本更新' note='意见反馈请提交 “右上角三个点” --> “关于豆瓣筛选” --> “反馈与投诉”'>
           <View>➣ 2019/09/11: 优化刷新请求逻辑、增加帮助页面</View>
           <View>➣ 2019/09/10: 优化列表样式、增加回到顶部和刷新按钮</View>
