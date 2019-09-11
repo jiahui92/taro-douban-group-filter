@@ -12,6 +12,7 @@ import GoTop from '../../components/GoTop'
 
 const MAX_PAGE = 10 // 最多加载多少页
 const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']
+const cacheObj = {} // state.cache的对象版本，用于减少抓包，判断后续是否已经请求过了
 
 @inject('counterStore')
 @observer
@@ -40,36 +41,58 @@ class Index extends Component {
   fetchList = () => {
     const {cache, activeTab} = this.state
 
-    if (cache[activeTab] && cache[activeTab].length) return
+    // if (!isReresh) return
 
     const baseUrl = `https://www.douban.com/group/${activeTab}/discussion?start=`
     const urlArr = Array(MAX_PAGE).fill('').map((_t, i) => baseUrl +  i * 25)
 
-    const list:any = []
+    const hasCache = cacheObj[activeTab] // 是否已经有缓存了
+    const list:any = hasCache ? cache[activeTab] : []
 
-    util.crawlToDomOnBatch(urlArr, (root, i) => {
+    util.crawlToDomOnBatch(urlArr, (root, i, stop) => {
 
       const { cache, activeTab } = this.state;
-
       const domList = root.querySelectorAll('table.olt tr').slice(1); // 获取table每一行
 
       domList.forEach(item => {
         const arr = item.querySelectorAll('a');
-        const $title = arr[0];
-        const $author = arr[1];
+        const $title = arr[0]
+        const $author = arr[1]
+        const link = $title.attributes.href
+        const contentId = link.match(/\d+/)[0];
+        const timeStr = item.querySelector('.time').text
 
-        // 返回的信息
-        list.push({
+        const d = {
+          contentId,
+          timeStr,
+          // link,
           title: $title.attributes.title,
-          link: $title.attributes.href,
           authorName: $author.text,
-          authorLink: $author.attributes.href,
-          timeStr: item.querySelector('.time').text,
+          // authorLink: $author.attributes.href,
           replyNum: Number(item.querySelectorAll('td')[2].text)
-        })
+        }
+
+        // 如果两者的timeStr都一样，表示这些数据都已经请求过了，不需要再list.push
+        if (cacheObj[contentId]) {
+          // cacheObj[activeTab]表示已经有过缓存数据了，可以结束抓包了
+          if (hasCache && cacheObj[contentId].timeStr === timeStr) {
+            stop() // 提前结束抓包
+            i = MAX_PAGE - 1
+          }
+          // console.log(d.title, timeStr) // 这些是重复的数据
+        } else {
+          cacheObj[contentId] = d
+          // 往列表里追加数据
+          if (hasCache) {
+            list.unshift(d)
+          } else {
+            list.push(d)
+          }
+        }
+
       })
 
-      const isLoading = i !== MAX_PAGE - 1
+      const isLoading = i < MAX_PAGE - 1
 
       Taro.showLoading({
         mask: true,
@@ -78,6 +101,7 @@ class Index extends Component {
 
       if (!isLoading) {
         Taro.hideLoading()
+        cacheObj[activeTab] = true // 表示一次批量抓包完成了
       }
 
       cache[activeTab] = list
@@ -87,15 +111,6 @@ class Index extends Component {
       })
 
     }, 1000)
-  }
-
-  // 刷新列表
-  onBtnRefresh = () => {
-    const {cache, activeTab} = this.state
-    cache[activeTab] = []
-    this.setState({cache}, () => {
-      this.fetchList()
-    })
   }
 
   // 根据importantList、blackList之类的配置重写计算list数组
@@ -123,15 +138,13 @@ class Index extends Component {
           item.replyNum > 50 ||   // 回应数超过50
           /^豆友\d+$/.test(an) || // 名称是“豆友xxx”
           /[1]([3-9])[0-9]{9}/.test(an) // 名称包含手机号
-        const contentId = item.link.match(/\d+/)[0];
-        const xcxLink = `/pages/content/index?cId=${contentId}`
+        const xcxLink = `/pages/content/index?cId=${item.contentId}`
         const clArr: string[] = []
         if (isImportant) clArr.push('important')
-        if (visitedContentIdArr.indexOf(contentId) !== -1) clArr.push('visited')
+        if (visitedContentIdArr.indexOf(item.contentId) !== -1) clArr.push('visited')
 
         cList.push({
           ...item,
-          contentId,
           xcxLink,
           isImportant,
           isAgent,
@@ -216,7 +229,7 @@ class Index extends Component {
           <AtInput {...this.getInputProps('blackList')} title='屏蔽关键词' />
           <AtSwitch title='显示中介信息' color='#0ebd13' onChange={isShowAgent => this.setState({isShowAgent})} />
           <View className='search-result-tip'>
-            <View className='btn-refresh' onClick={this.onBtnRefresh}>点击刷新列表</View>
+            <View className='btn-refresh' onClick={this.fetchList}>点击刷新列表</View>
             ，共有 {list.length} 个搜索结果
           </View>
         </View>

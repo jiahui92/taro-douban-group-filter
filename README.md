@@ -15,17 +15,15 @@
 * 帮助说明：导入小组使用说明 、 显示中介规则
 * Input组件优化
 * MAX_PAGE等抽取到配置中，方便以后在设置中调整
-* 返回顶部
 * 赞助
 * contentPage 增加复制App链接
 * 收藏
 
-* 爬虫优化，本地缓存
-* https://api.douban.com/v2/group/CDzufang/topics?start=0&count=100
 * 小组id显示为小组名称
 * 一键导入小组
 * 中介过滤规则
   * site:douban.com 18591619696
+  * 豆瓣帖子
 
 
 ## 小程序的问题

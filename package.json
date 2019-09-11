@@ -45,6 +45,7 @@
     "node-html-parser": "^1.1.16"
   },
   "devDependencies": {
+    "@babel/core": "^7.6.0",
     "@tarojs/plugin-babel": "1.3.17",
     "@tarojs/plugin-csso": "1.3.17",
     "@tarojs/plugin-less": "1.3.17",

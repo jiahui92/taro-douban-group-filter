@@ -55,8 +55,11 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
     }
 
     crawlToDom(url)
-      .then(root => callback(root, count++))
-      .catch(() => clearInterval(timer))
+      .then(root => callback(root, count++, () => clearInterval(timer)))
+      .catch((e) => {
+        clearInterval(timer)
+        throw Error(e)
+      })
 
   }
 
