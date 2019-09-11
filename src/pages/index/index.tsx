@@ -136,7 +136,7 @@ class Index extends Component {
         const isAgent = 
           countObj[an] > 2 ||     // 发帖次数大于2
           item.replyNum > 50 ||   // 回应数超过50
-          /^豆友\d+$/.test(an) || // 名称是“豆友xxx”
+          /(豆友\d+)|管家|租房|公寓/.test(an) || // 名称包含“豆友xxx”等
           /[1]([3-9])[0-9]{9}/.test(an) // 名称包含手机号
         const xcxLink = `/pages/content/index?cId=${item.contentId}`
         const clArr: string[] = []
