@@ -1,13 +1,13 @@
 import './index.scss'
 
 import { ComponentType } from 'react'
-import Taro, { Component } from '@tarojs/taro'
+import Taro, { Component, Config } from '@tarojs/taro'
 import { View } from '@tarojs/components';
 
-class Comp extends Component {
+class Page extends Component {
 
-  constructor (props) {
-    super(props)
+  config: Config = {
+    navigationBarTitleText: '豆组筛选',
   }
 
   state: any = {
@@ -21,11 +21,11 @@ class Comp extends Component {
     const {text} = this.state
 
     return (
-      <View className='comp-example'>
+      <View className='page-example'>
         <View>{text}</View>
       </View>
     )
   }
 }
 
-export default Comp  as ComponentType
+export default Page  as ComponentType

@@ -8,6 +8,7 @@ import util from '../../util'
 
 import { View, RichText } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
+import GoTop from '../../components/GoTop'
 
 
 @inject('counterStore')
@@ -59,13 +60,16 @@ class Index extends Component {
     })
   }
 
-  copyLink = () => {
-    // 唤起豆瓣APP: `https://www.douban.com/doubanapp/dispatch?copy_open=1&amp;from=mdouban&amp;download=1&amp;model=B&amp;copy=1&amp;page=&amp;channel=m_ad_nav_group_topic&amp;uri=%2Fgroup%2Ftopic%2F${this.$router.params.cId}`
+  copyLink = (type) => {
+    // 唤起豆瓣APP: 
+    const cId = this.$router.params.cId
+    const data = type === 'app' ? `https://www.douban.com/doubanapp/dispatch?copy_open=1&amp;from=mdouban&amp;download=1&amp;model=B&amp;copy=1&amp;page=&amp;channel=m_ad_nav_group_topic&amp;uri=%2Fgroup%2Ftopic%2F${cId}` : `https://m.douban.com/group/topic/${cId}/`
+
     wx.setClipboardData({
-      data: `https://m.douban.com/group/topic/${this.$router.params.cId}/`,
+      data,
       success: () => {
         Taro.showToast({
-          title: '豆瓣链接已复制成功，请粘贴到浏览器打开',
+          title: '链接复制成功，请粘贴到浏览器使用',
           icon: 'none',
           duration: 3000
         })
@@ -78,8 +82,13 @@ class Index extends Component {
 
     return (
       <View className='page-content'>
-        <AtButton className='btn-copy-link' type='primary' onClick={this.copyLink}>使用浏览器打开查看完整内容</AtButton>
+        <View className='btn-line'>
+          <AtButton type='secondary' onClick={this.copyLink}>使用浏览器打开</AtButton>
+          <AtButton type='primary' onClick={this.copyLink.bind(this, 'app')}>使用豆瓣APP打开</AtButton>
+        </View>
         <RichText nodes={contentStr} />
+
+        <GoTop />
       </View>
     )
   }

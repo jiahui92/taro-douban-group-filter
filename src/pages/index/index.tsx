@@ -1,13 +1,14 @@
 import './index.scss'
 
 import { ComponentType } from 'react'
-import Taro, { Component, Config } from '@tarojs/taro'
+import Taro, { Component, Config, showLoading } from '@tarojs/taro'
 import { observer, inject } from '@tarojs/mobx'
 import util from '../../util'
 import lodash from 'lodash'
 
 import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
+import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
 const MAX_PAGE = 10 // 最多加载多少页
@@ -40,15 +41,21 @@ class Index extends Component {
 
   fetchList = () => {
     const {cache, activeTab} = this.state
-
     // if (!isReresh) return
-
     const baseUrl = `https://www.douban.com/group/${activeTab}/discussion?start=`
     const urlArr = Array(MAX_PAGE).fill('').map((_t, i) => baseUrl +  i * 25)
 
     const hasCache = cacheObj[activeTab] // 是否已经有缓存了
     const list:any = hasCache ? cache[activeTab] : []
 
+    function showLoading(i = 0) {
+      Taro.showLoading({
+        mask: true,
+        title: hasCache ? '加载中' : `加载中 ${i + 1}/${MAX_PAGE}`
+      })
+    }
+
+    showLoading()
     util.crawlToDomOnBatch(urlArr, (root, i, stop) => {
 
       const { cache, activeTab } = this.state;
@@ -94,10 +101,7 @@ class Index extends Component {
 
       const isLoading = i < MAX_PAGE - 1
 
-      Taro.showLoading({
-        mask: true,
-        title: `加载中 ${i + 1}/${MAX_PAGE}`
-      })
+      showLoading(i + 1)
 
       if (!isLoading) {
         Taro.hideLoading()
@@ -243,6 +247,7 @@ class Index extends Component {
 
         <View className='list'>{listHtml}</View>
 
+        <FixedBtn bottom='5rem' text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} />
         <GoTop />
 
       </View>

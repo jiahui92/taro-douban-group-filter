@@ -1,6 +1,13 @@
 .page-content {
   padding: 0.7rem;
-  .btn-copy-link {
+
+  .btn-line {
+    display: flex;
     margin-bottom: 1rem;
+
+    at-button {
+      flex: 1;
+      margin: 0 0.3rem;
+    }
   }
 }
