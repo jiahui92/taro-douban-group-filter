@@ -1,22 +1,20 @@
 import './index.scss'
 
 import { ComponentType } from 'react'
-import Taro, { Component, Config, showLoading } from '@tarojs/taro'
-import { observer, inject } from '@tarojs/mobx'
+import Taro, { Component, Config } from '@tarojs/taro'
 import util from '../../util'
-import lodash from 'lodash'
+import lodash from 'lodash/core'
 
 import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
-const MAX_PAGE = 10 // 最多加载多少页
+const MAX_PAGE = 2 // 最多加载多少页
 const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']
 const cacheObj = {} // state.cache的对象版本，用于减少抓包，判断后续是否已经请求过了
 
-@inject('counterStore')
-@observer
+
 class Index extends Component {
 
   config: Config = {
@@ -176,7 +174,7 @@ class Index extends Component {
     }
   }
 
-  handleFieldChange = lodash.throttle((field, val) => {
+  handleFieldChange = util.throttle((field, val) => {    
     val = val.split(/,|，/).map(s => s.trim()).filter(s => s) // 分割成数组 、 替换掉前后空格 、 过滤空字符串
     this.setState({ [field]: val })
     Taro.setStorage({key: field, data: val})
@@ -247,7 +245,7 @@ class Index extends Component {
 
         <View className='list'>{listHtml}</View>
 
-        <FixedBtn bottom='5rem' text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} />
+        <FixedBtn index={2} text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} />
         <GoTop />
 
       </View>

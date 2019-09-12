@@ -7,9 +7,8 @@ import { ReactElement } from 'react';
 
 interface Comp {
   props: {
-    onClick: Function | any
-    right?: string,
-    bottom?: string,
+    onClick: Function | any,
+    index?: number, // 排第几个图标
     iconType?: string, // iconType和text二选一
     text?: ReactElement<any> | string,
   }
@@ -22,11 +21,10 @@ class Comp extends Component {
   }
 
   render () {
-    const { right = '1rem', bottom = '2rem', iconType, text } = this.props
-    const cls = { right, bottom }
+    const { index = 1, iconType, text } = this.props
 
     return (
-      <View className='comp-fixed-btn' style={cls} onClick={this.props.onClick}>
+      <View className={`comp-fixed-btn position-${index}`} onClick={this.props.onClick}>
         <AtFab>
           {
             text ?

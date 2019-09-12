@@ -1,16 +1,16 @@
 /* Custom Theme */
-$color-brand: #0ebd13;
-$color-brand-light: #4ace4e;
-$color-brand-dark: #0b970f;
+// $color-brand: #0ebd13;
+// $color-brand-light: #4ace4e;
+// $color-brand-dark: #0b970f;
+$color-brand: #6190e8;
+$color-brand-light: #89acee;
+$color-brand-dark: #4e73ba;
 
 /* 覆盖AtTabs组件样式 */
 .at-tabs {
   border-bottom: 4px solid $color-brand;
   // border-left: none;
   // border-right: none;
-}
-.at-tabs__item {
-  font-size: 0.7rem !important;
 }
 .at-tabs__item--active {
   color: white !important;

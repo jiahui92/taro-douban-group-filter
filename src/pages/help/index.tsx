@@ -5,7 +5,7 @@ import Taro, { Component, Config } from '@tarojs/taro'
 import { View } from '@tarojs/components';
 import { AtCard } from 'taro-ui';
 
-class Page extends Component {
+class Index extends Component {
 
   config: Config = {
     navigationBarTitleText: '使用说明',
@@ -45,4 +45,4 @@ class Page extends Component {
   }
 }
 
-export default Page  as ComponentType
+export default Index as ComponentType

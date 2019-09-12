@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
-import { parse, HTMLElement } from 'node-html-parser/dist/umd/index.js'
+// import { parse, HTMLElement } from 'node-html-parser/dist/umd/index.js'
+import { parse, HTMLElement } from 'node-html-parser' // 这个最终没有被uglify压缩，因为不支持压缩es6，待后续taro更换压缩器后即可修复
 
 /**
  * 包含错误兜底和提示的Taro.request函数
@@ -27,7 +28,12 @@ export function request (param: Taro.request.Param) {
  * @param url 
  */
 export function crawlToDom (url: string) {
-  return request({ url }).then((res: any) => {
+  return request({
+    url,
+    header: {
+      'content-type': 'text/html'
+    }
+  }).then((res: any) => {
     return parse(res.data) as HTMLElement
   })
 }
@@ -67,6 +73,27 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
   timer = setInterval(fn, delay)
 }
 
+export const throttle = (callback, offset) => {
+  let baseTime = 0
+  let timer
+  return (...args) => {
+    const currentTime = Date.now()
+
+    console.log(currentTime, baseTime + offset);
+
+    if (currentTime < baseTime + offset) {
+      clearTimeout(timer)
+    }
+
+    baseTime = currentTime
+    timer = setTimeout(() => {
+      callback(...args)
+    }, offset)
+
+  }
+}
+
+
 export default {
-  request, crawlToDom, crawlToDomOnBatch
+  request, crawlToDom, crawlToDomOnBatch, throttle
 }

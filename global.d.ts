@@ -24,3 +24,4 @@ declare const process: {
 }
 
 declare var wx: any;
+declare var my: any;

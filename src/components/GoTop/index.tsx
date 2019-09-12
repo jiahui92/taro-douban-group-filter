@@ -7,7 +7,8 @@ import FixedBtn from '../FixedBtn'
 class Comp extends Component {
 
   goTop = () => {
-    wx.pageScrollTo({
+
+    (Taro.getEnv() === Taro.ENV_TYPE.WEAPP ? wx : my).pageScrollTo({
       scrollTop: 0
     })
   }

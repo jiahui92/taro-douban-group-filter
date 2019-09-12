@@ -1,8 +1,22 @@
 .comp-fixed-btn {
   position: fixed;
   opacity: 0.8;
+  right: 30px;
+  
+  &.position-1 {
+    bottom: 30px;
+  }
+
+  &.position-2 {
+    bottom: 150px;
+  }
+
+  &.position-3 {
+    bottom: 300px;
+  }
+
   .text {
-    font-size: 0.7rem;
-    margin: 0.2rem;
+    font-size: 26px;
+    margin: 20px;
   }
 }

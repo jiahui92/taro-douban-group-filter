@@ -10,26 +10,26 @@
 
   .search-result-tip {
     text-align: right;
-    font-size: 0.7rem;
+    font-size: 24px;
     color: grey;
-    margin: 0.7rem 1rem 1.5rem;
+    margin: 24px 30px 50px;
   }
 
   .list {
     min-height: 80vh;
 
     .item {
-      padding: 0.4rem 0.5rem;
+      padding: 13px 15px;
       border-bottom: 1px solid #eee;
 
       .extra-info {
         display: flex;
         align-items: center;
-        font-size: 0.7rem;
+        font-size: 24px;
         color: #ccc;
 
         view {
-          margin-right: 0.1rem;
+          margin-right: 30px;
         }
 
         .is-agent {
@@ -44,7 +44,7 @@
 
     .title {
       display: inline-block;
-      font-size: 0.9rem;
+      font-size: 28px;
       white-space: nowrap;
       max-width: 100%;
       overflow: hidden;
