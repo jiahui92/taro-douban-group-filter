@@ -25,3 +25,5 @@
 
 ## bug
 * [ ] 支付宝的rich-text不展示图片（可能是配置问题）
+* [ ] 支付宝真机运行request请求html会报json解析错误
+
