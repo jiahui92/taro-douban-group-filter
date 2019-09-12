@@ -10,7 +10,7 @@ import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
-const MAX_PAGE = 2 // 最多加载多少页
+const MAX_PAGE = 10 // 最多加载多少页
 const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']
 const cacheObj = {} // state.cache的对象版本，用于减少抓包，判断后续是否已经请求过了
 

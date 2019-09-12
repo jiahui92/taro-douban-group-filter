@@ -1,4 +1,13 @@
-# taro-douban-group-filter
+# 豆组筛选
+豆瓣小组爬虫微信小程序版本，支持自定义小组，多关键词置顶／过滤、中介过滤
+
+
+## 预览
+微信小程序审核后面通过不了了，所以扫码看到的是旧版本的小程序（git tag 0.4.0）<br/>
+![截屏](https://github.com/jiahui92/douban-group-filter/blob/master/assets/qrcode.jpg)<br/>
+![截屏](https://github.com/jiahui92/douban-group-filter/blob/master/assets/s-index.jpg)<br/>
+![截屏](https://github.com/jiahui92/douban-group-filter/blob/master/assets/s-content.jpg)
+
 
 ## 启动
 * yarn
