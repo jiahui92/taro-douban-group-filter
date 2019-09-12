@@ -4,9 +4,9 @@
 
 ## 预览
 微信小程序审核后面通过不了了，所以扫码看到的是旧版本的小程序（git tag 0.4.0）<br/>
-![截屏](https://github.com/jiahui92/douban-group-filter/blob/master/assets/qrcode.jpg)<br/>
-![截屏](https://github.com/jiahui92/douban-group-filter/blob/master/assets/s-index.jpg)<br/>
-![截屏](https://github.com/jiahui92/douban-group-filter/blob/master/assets/s-content.jpg)
+![截屏](https://github.com/jiahui92/taro-douban-group-filter/blob/master/assets/qrcode.jpg)<br/>
+![截屏](https://github.com/jiahui92/taro-douban-group-filter/blob/master/assets/s-index.png)<br/>
+![截屏](https://github.com/jiahui92/taro-douban-group-filter/blob/master/assets/s-content.png)
 
 
 ## 启动
