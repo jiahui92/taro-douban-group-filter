@@ -7,7 +7,7 @@ import lodash from 'lodash/core'
 
 import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
-// import FixedBtn from '../../components/FixedBtn'
+import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
 const MAX_PAGE = 10 // 最多加载多少页
@@ -245,7 +245,7 @@ class Index extends Component {
 
         <View className='list'>{listHtml}</View>
 
-        {/* <FixedBtn index={2} text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} /> */}
+        <FixedBtn index={2} text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} />
         <GoTop />
 
       </View>
