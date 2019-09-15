@@ -7,7 +7,7 @@ import lodash from 'lodash/core'
 
 import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
-import FixedBtn from '../../components/FixedBtn'
+// import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
 const MAX_PAGE = 10 // 最多加载多少页
@@ -99,7 +99,7 @@ class Index extends Component {
 
       const isLoading = i < MAX_PAGE - 1
 
-      showLoading(i + 1)
+      showLoading(i)
 
       if (!isLoading) {
         Taro.hideLoading()
@@ -229,7 +229,7 @@ class Index extends Component {
           <AtInput {...this.getInputProps('tabs')} title='订阅小组' />
           <AtInput {...this.getInputProps('importantList')} title='置顶关键词' />
           <AtInput {...this.getInputProps('blackList')} title='屏蔽关键词' />
-          <AtSwitch title='显示中介信息' color='#0ebd13' onChange={isShowAgent => this.setState({isShowAgent})} />
+          <AtSwitch title='显示中介信息' onChange={isShowAgent => this.setState({isShowAgent})} />
           <View className='search-result-tip'>
             <View className='btn-refresh' onClick={this.fetchList}>点击刷新列表</View>
             ，共有 {list.length} 个搜索结果
@@ -245,7 +245,7 @@ class Index extends Component {
 
         <View className='list'>{listHtml}</View>
 
-        <FixedBtn index={2} text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} />
+        {/* <FixedBtn index={2} text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} /> */}
         <GoTop />
 
       </View>
