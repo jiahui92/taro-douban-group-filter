@@ -174,11 +174,11 @@ class Index extends Component {
     }
   }
 
-  handleFieldChange = util.throttle((field, val) => {    
+  handleFieldChange = util.debounce((field, val) => {    
     val = val.split(/,|，/).map(s => s.trim()).filter(s => s) // 分割成数组 、 替换掉前后空格 、 过滤空字符串
     this.setState({ [field]: val })
     Taro.setStorage({key: field, data: val})
-  }, 3000)
+  }, 2000)
 
   handleTabClick = (i) => {
     this.setState({activeTab: this.state.tabs[i]}, () => {

@@ -73,27 +73,17 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
   timer = setInterval(fn, delay)
 }
 
-export const throttle = (callback, offset) => {
-  let baseTime = 0
-  let timer
-  return (...args) => {
-    const currentTime = Date.now()
-
-    console.log(currentTime, baseTime + offset);
-
-    if (currentTime < baseTime + offset) {
-      clearTimeout(timer)
-    }
-
-    baseTime = currentTime
+export const debounce = (callback, offset) => {
+  let timer;
+  return (...arg) => {
+    clearTimeout(timer);
     timer = setTimeout(() => {
-      callback(...args)
-    }, offset)
-
+      callback(...arg)
+    }, offset);
   }
 }
 
 
 export default {
-  request, crawlToDom, crawlToDomOnBatch, throttle
+  request, crawlToDom, crawlToDomOnBatch, debounce
 }
