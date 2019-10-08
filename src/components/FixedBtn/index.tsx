@@ -21,7 +21,7 @@ class Comp extends Component {
   }
 
   render () {
-    const { index = 1, iconType, text } = this.props
+    const { index = 1, iconType = '', text } = this.props
 
     return (
       <View className={`comp-fixed-btn position-${index}`} onClick={this.props.onClick}>
@@ -29,7 +29,7 @@ class Comp extends Component {
           {
             text ?
               <View className='text'>{text}</View> :
-              <AtIcon value={iconType as any} size={20} />
+              <AtIcon value={iconType} size={20} />
           }
         </AtFab>
       </View>

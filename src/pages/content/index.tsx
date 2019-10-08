@@ -92,9 +92,9 @@ class Index extends Component {
     return (
       <View className='page-content'>
         <View className='btn-line'>
-          {/* <AtButton type='primary' onClick={this.copyLink}>使用浏览器打开查看完整内容</AtButton> */}
-          <AtButton type='secondary' onClick={this.copyLink}>使用浏览器打开</AtButton>
-          <AtButton type='primary' onClick={this.copyLink.bind(this, 'app')}>使用豆瓣APP打开</AtButton>
+          <AtButton type='primary' onClick={this.copyLink}>使用浏览器打开查看完整内容</AtButton>
+          {/* <AtButton type='secondary' onClick={this.copyLink}>使用浏览器打开</AtButton> */}
+          {/* <AtButton type='primary' onClick={this.copyLink.bind(this, 'app')}>使用豆瓣APP打开</AtButton> */}
         </View>
 
         {/* 支付宝显示不了图片？ */}
