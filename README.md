@@ -3,9 +3,9 @@
 
 
 ## 预览
-![截屏](https://github.com/jiahui92/taro-douban-group-filter/blob/master/assets/qrcode.jpg)<br/>
-<img src="https://github.com/jiahui92/taro-douban-group-filter/blob/master/assets/s-index.png" height="400" style="margin-right: 10px;" />
-<img src="https://github.com/jiahui92/taro-douban-group-filter/blob/master/assets/s-content.png" height="400" />
+![截屏](https://i.loli.net/2019/11/03/mRWHVG2NCilBwX1.jpg)<br/>
+<img src="https://i.loli.net/2019/11/03/CZoJDXVwh4lAmdH.png" height="400" style="margin-right: 10px;" />
+<img src="https://i.loli.net/2019/11/03/Y91QVhXxSFo3ypO.png" height="400" />
 
 
 ## 启动
