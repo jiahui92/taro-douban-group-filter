@@ -10,9 +10,9 @@ import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
-const MAX_PAGE = 10 // 最多加载多少页
-const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']
-const cacheObj = {} // state.cache的对象版本，用于减少抓包，判断后续是否已经请求过了
+const MAX_PAGE = 10 // 最多加载页数
+const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh'] // 小组idArr
+const cacheObj = {} // state.cache的对象版本，用于减少抓包，判断后续是否已经请求过了；相比cache，cacheObj是不区分
 
 
 class Index extends Component {
@@ -26,14 +26,13 @@ class Index extends Component {
     cache: {}, // 缓存接口数据
     isShowAgent: false, // 是否显示中介信息
     activeTab: tabs[0] || '', // 当前选中的Tab
-    tabs, // CDzufang, hezu
+    tabs, // 小组的tabs数组
     importantList: Taro.getStorageSync('importantList') || [], // 置顶名单
     blackList: Taro.getStorageSync('blackList') || [], // 黑名单
     visitedContentIdArr: Taro.getStorageSync('visitedContentIdArr') || [] // mock a:visited，记录访问过的a标签
   }
 
   componentDidMount () {
-    // util.request({url: 'https://douban.uieee.com/v2/group/CDzufang/topics?start=0&count=100'})})
     this.fetchList()
   }
 
@@ -43,13 +42,13 @@ class Index extends Component {
     const baseUrl = `https://www.douban.com/group/${activeTab}/discussion?start=`
     const urlArr = Array(MAX_PAGE).fill('').map((_t, i) => baseUrl +  i * 25)
 
-    const hasCache = cacheObj[activeTab] // 是否已经有缓存了
-    const list:any = hasCache ? cache[activeTab] : []
+    const isAppend = cacheObj[activeTab] // 是否已经有缓存了，追加请求数据，比如点击刷新按钮时
+    const list:any = isAppend ? cache[activeTab] : []
 
     function showLoading(i = 0) {
       Taro.showLoading({
         mask: true,
-        title: hasCache ? '加载中' : `加载中 ${i + 1}/${MAX_PAGE}`
+        title: isAppend ? '加载中' : `加载中 ${i + 1}/${MAX_PAGE}`
       })
     }
 
@@ -79,20 +78,16 @@ class Index extends Component {
 
         // 如果两者的timeStr都一样，表示这些数据都已经请求过了，不需要再list.push
         if (cacheObj[contentId]) {
-          // cacheObj[activeTab]表示已经有过缓存数据了，可以结束抓包了
-          if (hasCache && cacheObj[contentId].timeStr === timeStr) {
+          // isAppend表示追加请求数据，如果此时追加到contentId和timeStr都一样的item，则表示可以结束抓包了（后续的item都是旧数据或者已经请求过的）
+          if (isAppend && cacheObj[contentId].timeStr === timeStr) {
             stop() // 提前结束抓包
             i = MAX_PAGE - 1
           }
           // console.log(d.title, timeStr) // 这些是重复的数据
         } else {
           cacheObj[contentId] = d
-          // 往列表里追加数据
-          if (hasCache) {
-            list.unshift(d)
-          } else {
-            list.push(d)
-          }
+          // 往列表里追加数据，isAppend(点击刷新按钮)时是从上面追加，因为数据是新的，如果push到底部用户无感知／看不到
+          isAppend ? list.unshift(d) : list.push(d)
         }
 
       })
@@ -137,7 +132,7 @@ class Index extends Component {
         // 是否“疑似中介”
         const isAgent = 
           countObj[an] > 2 ||     // 发帖次数大于2
-          item.replyNum > 50 ||   // 回应数超过50
+          item.replyNum > 50 ||   // 回帖数超过50(回帖太多人一般是中介自动顶帖，就算不是，那么多人问了，也表示这房子不好或者已经有很多竞争者了)
           /(豆友\d+)|管家|租房|公寓/.test(an) || // 名称包含“豆友xxx”等
           /[1]([3-9])[0-9]{9}/.test(an) // 名称包含手机号
         const xcxLink = `/pages/content/index?cId=${item.contentId}`
@@ -174,8 +169,9 @@ class Index extends Component {
     }
   }
 
-  handleFieldChange = util.debounce((field, val) => {    
-    val = val.split(/,|，/).map(s => s.trim()).filter(s => s) // 分割成数组 、 替换掉前后空格 、 过滤空字符串
+  handleFieldChange = util.debounce((field, val) => {
+    // 分割成数组 、 替换掉前后空格 、 过滤空字符串
+    val = val.split(/,|，/).map(s => s.trim()).filter(s => s)
     this.setState({ [field]: val })
     Taro.setStorage({key: field, data: val})
   }, 2000)
@@ -202,7 +198,7 @@ class Index extends Component {
   render () {
     const { tabs, activeTab } = this.state
 
-    const list = this.getList() // 正在加载时，不渲染列表
+    const list = this.getList()
     // 帖子列表html
     const listHtml = list.map(t => (
       <View key={t.contentId} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
@@ -245,7 +241,7 @@ class Index extends Component {
 
         <View className='list'>{listHtml}</View>
 
-        <FixedBtn index={2} text='使用说明' onClick={() => { Taro.navigateTo({url:'/pages/help/index'}) }} />
+        <FixedBtn index={2} text='使用说明' onClick={() => Taro.navigateTo({url:'/pages/help/index'}) } />
         <GoTop />
 
       </View>
