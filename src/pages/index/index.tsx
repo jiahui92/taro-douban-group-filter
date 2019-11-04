@@ -11,7 +11,7 @@ import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
 const MAX_PAGE = 10 // 最多加载页数
-const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh'] // 小组idArr
+const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh'] // 默认的小组idArr
 const cacheObj = {} // state.cache的对象版本，用于减少抓包，判断后续是否已经请求过了；相比cache，cacheObj是不区分
 
 
@@ -134,7 +134,7 @@ class Index extends Component {
           countObj[an] > 2 ||     // 发帖次数大于2
           item.replyNum > 50 ||   // 回帖数超过50(回帖太多人一般是中介自动顶帖，就算不是，那么多人问了，也表示这房子不好或者已经有很多竞争者了)
           /(豆友\d+)|管家|租房|公寓/.test(an) || // 名称包含“豆友xxx”等
-          /[1]([3-9])[0-9]{9}/.test(an) // 名称包含手机号
+          /1[3-9][0-9]{9}/.test(an) // 名称包含手机号
         const xcxLink = `/pages/content/index?cId=${item.contentId}`
         const clArr: string[] = []
         if (isImportant) clArr.push('important')
