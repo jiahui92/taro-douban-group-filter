@@ -9,10 +9,10 @@ export function request (param: Taro.request.Param) {
 
   // 兜底错误处理
   function fail (e) {
-    const msg = e.message || e.errMsg || '网络错误，请稍后再试' // errMsg是Taro抛出来的
     Taro.hideLoading()
-    Taro.showToast({ icon: 'none', mask: true, title: msg })
-    throw new Error(msg)
+    // 对用户抛出友好一点的错误提示，而不是e.message
+    Taro.showToast({ icon: 'none', mask: true, title: '操作可能太频繁，请稍后重试或尝试切换网络到4G／Wifi' })
+    throw new Error(e.message || e.errMsg) // errMsg是Taro抛出来的
   }
 
   return Taro.request(param).then(res => {
@@ -41,26 +41,21 @@ export function crawlToDom (url: string) {
 /**
  * 批量爬虫
  * @param urlArr 请求url的数组
- * @param callback 每爬取一次都会调一次接口
+ * @param callback 每爬取一次都会回调一次接口
  * @param delay 默认间隔1000ms爬取一次
  */
 export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = () => {}, delay: number = 1000) {
   let i = 0
-  let count = 0 // 接口不一定会按顺序执行，甚至有时候是并行的，所以不能够返回i给callback，而是依赖count来计算进度
+  let count = 0 // 因为网络延迟，接口不一定会按顺序完成请求，甚至有时候是并行的，所以不能够返回i给callback，而是依赖count来计算进度
   let timer
 
   const fn = () => {
-
-    const url = urlArr[i]
-
-    if (i < urlArr.length) {
-      i++
-    } else {
+    if (i >= urlArr.length) {
       clearInterval(timer)
       return
     }
 
-    crawlToDom(url)
+    crawlToDom(urlArr[i++])
       .then(root => callback(root, count++, () => clearInterval(timer)))
       .catch((e) => {
         clearInterval(timer)
@@ -83,7 +78,31 @@ export const debounce = (callback, offset) => {
   }
 }
 
+export let xcx
+// 在这里抹平掉所有平台的api调用
+(() => {
+  let platform
+  const TYPE = Taro.ENV_TYPE
+  switch (Taro.getEnv()) {
+    case TYPE.ALIPAY: {
+      platform = my
+      break
+    }
+    default: platform = wx
+  }
+
+  xcx = {...platform}
+  xcx.setClipboardData = (text, success) => {
+    const fn = platform.setClipboardData || platform.setClipboard // 支付宝是setClipboard
+    fn({
+      text,
+      data: text,
+      success
+    })
+  }
+})()
+
 
 export default {
-  request, crawlToDom, crawlToDomOnBatch, debounce
+  request, crawlToDom, crawlToDomOnBatch, debounce, xcx
 }

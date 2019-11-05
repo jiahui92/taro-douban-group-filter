@@ -68,16 +68,7 @@ class Index extends Component {
     const cId = this.$router.params.cId
     const data = type === 'app' ? `https://www.douban.com/doubanapp/dispatch?copy_open=1&amp;from=mdouban&amp;download=1&amp;model=B&amp;copy=1&amp;page=&amp;channel=m_ad_nav_group_topic&amp;uri=%2Fgroup%2Ftopic%2F${cId}` : `https://m.douban.com/group/topic/${cId}/`
 
-    function setClipboard (text, success) {
-      const fn =  Taro.getEnv() === Taro.ENV_TYPE.WEAPP ? wx.setClipboardData : my.setClipboard
-      fn({
-        text,
-        data: text,
-        success
-      })
-    }
-
-    setClipboard(data, () => {
+    util.xcx.setClipboardData(data, () => {
       Taro.showToast({
         title: '链接复制成功，请粘贴到浏览器打开',
         icon: 'none',

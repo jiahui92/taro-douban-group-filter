@@ -24,6 +24,10 @@ class Index extends Component {
           <View>➣ 比如“北京租房”小组的PC主页为“https://www.douban.com/group/beijingzufang/”, 则小组id为“beijingzufang”，然后填入“订阅小组”栏</View>
         </AtCard>
 
+        <AtCard title='常用置顶／过滤关键词'>
+          地名、地铁线路、小区名、公司名、合租、整租、室友、女（限女生）
+        </AtCard>
+
         <AtCard title='中介判定规则'>
           <View>➣ 名称包含“豆友xxx”、手机号等</View>
           <View>➣ 发布两次以上帖子</View>
@@ -31,14 +35,8 @@ class Index extends Component {
         </AtCard>
 
         <AtCard title='页面报错'>
-          当刷新太频繁时，偶尔会出现“request url”之类的报错，休息一会再试吧
+          当操作太频繁时，可能会出现“request url”之类的报错，这时可以尝试切换一下网络（比如从wifi切换到4G），还不行的话休息一会再试吧
         </AtCard>
-
-        {/* <AtCard title='版本更新' note='意见反馈请提交 “右上角三个点” --> “关于豆瓣筛选” --> “反馈与投诉”'>
-          <View>➣ 2019/09/11: 优化刷新请求逻辑、增加帮助页面</View>
-          <View>➣ 2019/09/10: 优化列表样式、增加回到顶部和刷新按钮</View>
-          <View>➣ 2019/09/09: 最简版本</View>
-        </AtCard> */}
 
       </View>
     )

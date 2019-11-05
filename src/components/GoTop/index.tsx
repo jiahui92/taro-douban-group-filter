@@ -3,12 +3,13 @@ import './index.scss'
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components';
 import FixedBtn from '../FixedBtn'
+import util from '../../util'
 
 class Comp extends Component {
 
   goTop = () => {
 
-    (Taro.getEnv() === Taro.ENV_TYPE.WEAPP ? wx : my).pageScrollTo({
+    util.xcx.pageScrollTo({
       scrollTop: 0
     })
   }
