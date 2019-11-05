@@ -22,10 +22,19 @@
       padding: 13px 15px;
       border-bottom: 1px solid #eee;
 
+      &.btn-next-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $color-brand-light;
+        font-size: 24px;
+        height: 72px;
+      }
+
       .extra-info {
         display: flex;
         align-items: center;
-        font-size: 24px;
+        font-size: 28px;
         color: #ccc;
 
         view {

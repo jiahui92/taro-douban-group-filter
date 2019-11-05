@@ -11,8 +11,19 @@ import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
 const MAX_PAGE = 10 // 最多加载页数
-const tabs = Taro.getStorageSync('tabs') || ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh'] // 默认的小组idArr
-const cacheObj = {} // state.cache的对象版本，用于减少抓包，判断后续是否已经请求过了；相比cache，cacheObj是不区分
+const PAGE_SIZE = 25 // 每页item个数，该值不可调
+const gs = (k, arr?) => Taro.getStorageSync(k) || arr || []
+const tabs = gs('tabs', ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']) // 默认的小组idArr
+const importantList = gs('importantList')
+const blackList = gs('blackList')
+const cacheObj = {} // state.cache的对象版本，用于优化抓包，判断某些数据是否已经请求过了；以及记录翻页数据
+
+// 数据打点
+wx.reportAnalytics('get_filed_data', {
+  group_list: tabs.join(','),
+  important_list: importantList.join(','),
+  black_list: blackList.join(','),
+});
 
 
 class Index extends Component {
@@ -21,34 +32,46 @@ class Index extends Component {
     navigationBarTitleText: '豆组筛选',
   }
 
-  state: any = {
+  state = {
     isLoading: false,
-    cache: {}, // 缓存接口数据
-    isShowAgent: false, // 是否显示中介信息
     activeTab: tabs[0] || '', // 当前选中的Tab
     tabs, // 小组的tabs数组
-    importantList: Taro.getStorageSync('importantList') || [], // 置顶名单
-    blackList: Taro.getStorageSync('blackList') || [], // 黑名单
-    visitedContentIdArr: Taro.getStorageSync('visitedContentIdArr') || [] // mock a:visited，记录访问过的a标签
+    cache: {}, // 缓存接口数据
+    isShowAgent: false, // 是否显示中介信息
+    importantList, // 置顶名单
+    blackList, // 黑名单
+    visitedContentIdArr: gs('visitedContentIdArr'), // mock a:visited，记录访问过的a标签
   }
 
   componentDidMount () {
     this.fetchList()
   }
 
-  fetchList = () => {
+  // fetchType: prepend是获取最新数据并追加到列表前面，nextPage是翻下一页并追加到列表后面
+  fetchList = (fetchType?:''|'prepend'|'nextPage') => {
     const {cache, activeTab} = this.state
-    // if (!isReresh) return
-    const baseUrl = `https://www.douban.com/group/${activeTab}/discussion?start=`
-    const urlArr = Array(MAX_PAGE).fill('').map((_t, i) => baseUrl +  i * 25)
+    const isPrepend = fetchType == 'prepend' // 是否已经有缓存了，追加请求数据，比如点击刷新按钮时
+    const list = cache[activeTab] || []
+    
+    if (!cacheObj[activeTab]) cacheObj[activeTab] = { page: MAX_PAGE }
+    const co = cacheObj[activeTab]
+    
+    // 翻页偏移值 依赖co.page来翻页
+    let pageStart = 0
+    if (fetchType == 'nextPage') {
+      pageStart = PAGE_SIZE * co.page
+      co.page += MAX_PAGE
+    }
 
-    const isAppend = cacheObj[activeTab] // 是否已经有缓存了，追加请求数据，比如点击刷新按钮时
-    const list:any = isAppend ? cache[activeTab] : []
+    const urlArr = Array(MAX_PAGE).fill('').map((_t, i) => {
+      return `https://www.douban.com/group/${activeTab}/discussion?start=${i * PAGE_SIZE + pageStart}`
+    })
 
     function showLoading(i = 0) {
+      const p =  pageStart / PAGE_SIZE
       Taro.showLoading({
         mask: true,
-        title: isAppend ? '加载中' : `加载中 ${i + 1}/${MAX_PAGE}`
+        title: isPrepend ? '加载中' : `加载 ${i + 1 + p}/${MAX_PAGE + p} 页`
       })
     }
 
@@ -77,29 +100,22 @@ class Index extends Component {
         }
 
         // 如果两者的timeStr都一样，表示这些数据都已经请求过了，不需要再list.push
-        if (cacheObj[contentId]) {
-          // isAppend表示追加请求数据，如果此时追加到contentId和timeStr都一样的item，则表示可以结束抓包了（后续的item都是旧数据或者已经请求过的）
-          if (isAppend && cacheObj[contentId].timeStr === timeStr) {
+        if (co[contentId]) {
+          // isPrepend表示追加请求数据，如果此时追加到contentId和timeStr都一样的item，则表示可以结束抓包了（后续的item都是旧数据或者已经请求过的）
+          if (isPrepend && co[contentId].timeStr === timeStr) {
             stop() // 提前结束抓包
             i = MAX_PAGE - 1
           }
-          // console.log(d.title, timeStr) // 这些是重复的数据
         } else {
-          cacheObj[contentId] = d
-          // 往列表里追加数据，isAppend(点击刷新按钮)时是从上面追加，因为数据是新的，如果push到底部用户无感知／看不到
-          isAppend ? list.unshift(d) : list.push(d)
+          co[contentId] = d
+          list.push(d) // 随便push，后续会根据时间来排序的
         }
 
       })
 
       const isLoading = i < MAX_PAGE - 1
-
       showLoading(i)
-
-      if (!isLoading) {
-        Taro.hideLoading()
-        cacheObj[activeTab] = true // 表示一次批量抓包完成了
-      }
+      if (!isLoading) Taro.hideLoading()
 
       cache[activeTab] = list
       this.setState({
@@ -123,18 +139,21 @@ class Index extends Component {
     });
 
     list.forEach(item => {
-      const fn = val => item.title.indexOf(val) !== -1;
+      const fn = val => item.title.indexOf(val) !== -1
       // 黑名单过滤
       if (!blackList.some(fn)) {
         // 重点关注
-        const isImportant = importantList.some(fn);
-        const an = item.authorName;
+        const isImportant = importantList.some(fn)
+        const an = item.authorName
+        const phoneTester = /1[3-9][0-9]{9}/
+        
         // 是否“疑似中介”
-        const isAgent = 
-          countObj[an] > 2 ||     // 发帖次数大于2
-          item.replyNum > 50 ||   // 回帖数超过50(回帖太多人一般是中介自动顶帖，就算不是，那么多人问了，也表示这房子不好或者已经有很多竞争者了)
-          /(豆友\d+)|管家|租房|公寓/.test(an) || // 名称包含“豆友xxx”等
-          /1[3-9][0-9]{9}/.test(an) // 名称包含手机号
+        const isAgent =
+          countObj[an] > 1 || // 看了N多条length==2的数据，发帖数大于1的99.99%不是中介就是管家之类的，尤其是连续发帖那种，直接简单粗暴判断了。。。
+          item.replyNum > 50 ||   // 回帖数超过50(回帖太多人一般是中介自动顶帖，就算不是，那么多人问了没租出去，也表示已经有很多竞争者了，或者这房子不好)
+          /(豆友\d+)|管家|租房|公寓|房屋|出租/.test(an) || // 名称包含“豆友xxx”等
+          phoneTester.test(an) || // 名称包含手机号
+          phoneTester.test(item.title) // 标题包含手机号
         const xcxLink = `/pages/content/index?cId=${item.contentId}`
         const clArr: string[] = []
         if (isImportant) clArr.push('important')
@@ -156,7 +175,8 @@ class Index extends Component {
     }
 
     // 重点关注的置顶
-    return lodash.sortBy(cList, (o) => o.isImportant ? 0 : 1) // 稳定排序
+    lodash.sortBy(cList, 'timeStr')
+    return lodash.sortBy(cList, (o) => o.isImportant ? 0 : 1)
   }
 
   // Input筛选组件的通用props
@@ -177,8 +197,11 @@ class Index extends Component {
   }, 2000)
 
   handleTabClick = (i) => {
-    this.setState({activeTab: this.state.tabs[i]}, () => {
-      this.fetchList()
+    const {tabs, cache} = this.state
+    const activeTab = tabs[i]
+    this.setState({activeTab}, () => {
+      // tabClick(tabClick有两种可能，刚开始加载和prepend)
+      this.fetchList(cache[activeTab] ? 'prepend' : '')
     })
   }
 
@@ -186,7 +209,6 @@ class Index extends Component {
     Taro.navigateTo({url: t.xcxLink})
 
     const data = this.state.visitedContentIdArr
-
     data.push(t.contentId)
 
     // 最多只缓存1000个id
@@ -199,8 +221,17 @@ class Index extends Component {
     const { tabs, activeTab } = this.state
 
     const list = this.getList()
+    let mid = list.findIndex(t => !t.isImportant)
+    mid = mid == -1 ? 0 : mid
+    list.splice(mid, 0, { isBtnNextPage: true })
+
     // 帖子列表html
     const listHtml = list.map(t => (
+      t.isBtnNextPage ?
+      <View className='item btn-next-page' onClick={() => this.fetchList('nextPage')}>
+        <AtIcon value='reload' size={12} />
+        加载下一页
+      </View> :
       <View key={t.contentId} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
         <View className={t.className + ' title'}>{ t.title }</View>
         <View className='extra-info'>
@@ -227,7 +258,7 @@ class Index extends Component {
           <AtInput {...this.getInputProps('blackList')} title='屏蔽关键词' />
           <AtSwitch title='显示中介信息' onChange={isShowAgent => this.setState({isShowAgent})} />
           <View className='search-result-tip'>
-            <View className='btn-refresh' onClick={this.fetchList}>点击刷新列表</View>
+            <View className='btn-refresh' onClick={() => this.fetchList('prepend')}>刷新列表</View>
             ，共有 {list.length} 个搜索结果
           </View>
         </View>
@@ -241,7 +272,7 @@ class Index extends Component {
 
         <View className='list'>{listHtml}</View>
 
-        <FixedBtn index={2} text='使用说明' onClick={() => Taro.navigateTo({url:'/pages/help/index'}) } />
+        <FixedBtn index={2} text='使用说明' onClick={() => Taro.navigateTo({url:'/pages/help/index'})} />
         <GoTop />
 
       </View>

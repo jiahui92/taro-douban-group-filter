@@ -25,12 +25,12 @@ class Index extends Component {
         </AtCard>
 
         <AtCard title='常用置顶／过滤关键词'>
-          地名、地铁线路、小区名、公司名、合租、整租、室友、女（限女生）
+          地名、地铁线路、小区名、公司名、求租、合租、整租、室友、女（限女生）
         </AtCard>
 
         <AtCard title='中介判定规则'>
           <View>➣ 名称包含“豆友xxx”、手机号等</View>
-          <View>➣ 发布两次以上帖子</View>
+          <View>➣ 发布两次及以上帖子</View>
           <View>➣ 帖子回复数超过50</View>
         </AtCard>
 

@@ -68,13 +68,13 @@ export function crawlToDomOnBatch (urlArr: string[] = [], callback: Function = (
   timer = setInterval(fn, delay)
 }
 
-export const debounce = (callback, offset) => {
+export const debounce = (callback, delay) => {
   let timer;
   return (...arg) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       callback(...arg)
-    }, offset);
+    }, delay);
   }
 }
 
