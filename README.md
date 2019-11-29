@@ -39,6 +39,7 @@
   * [ ] 根据用户主页链接or用户id
 * [ ] [水木社区](http://www.newsmth.net/nForum/#!board/HouseRent)
 * [ ] 收藏
+* [ ] 分享
 
 #### 其它
 * 优化：信息过多时，点击“显示中介信息”会有1s的延迟
@@ -50,9 +51,6 @@
 * yarn dev:weapp
 * 微信开发者工具导入项目`./dist/weapp`
 
-## bug
-* [ ] 支付宝的rich-text不展示图片（可能是开发配置问题）
-* [ ] 支付宝真机运行request请求html会报json解析错误
 
 ## 最后
 本项目仅供学习使用，请勿商用，否则后果自负（狗头
