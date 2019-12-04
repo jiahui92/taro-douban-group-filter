@@ -32,14 +32,13 @@
     * 发过的帖子
   * [ ] 贝叶斯垃圾邮件
   * [ ] 缓存中介信息
+* [ ] 一键导入小组:根据城市导入常用小组
 * [ ] 订阅小组等Input组件交互优化
   * 小组id显示为小组名称
-* [ ] 一键导入小组
-  * [ ] 根据城市导入常用小组
-  * [ ] 根据用户主页链接or用户id
 * [ ] [水木社区](http://www.newsmth.net/nForum/#!board/HouseRent)
-* [ ] 收藏
 * [ ] 分享
+* [ ] 收藏
+
 
 #### 其它
 * 优化：信息过多时，点击“显示中介信息”会有1s的延迟
@@ -47,8 +46,8 @@
 
 ## 启动
 * [安装Taro](https://nervjs.github.io/taro/docs/GETTING-STARTED.html)
-* yarn
-* yarn dev:weapp
+* npm i
+* npm run dev:weapp
 * 微信开发者工具导入项目`./dist/weapp`
 
 
