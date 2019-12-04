@@ -2,7 +2,7 @@ import './index.scss'
 
 import { ComponentType } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import util from '../../util'
+import utils from '../../utils'
 import lodash from 'lodash/core'
 
 import { View } from '@tarojs/components'
@@ -10,20 +10,13 @@ import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 
-const MAX_PAGE = 10 // 最多加载页数
+const MAX_PAGE = 2 // 一次加载页数
 const PAGE_SIZE = 25 // 每页item个数，该值不可调
 const gs = (k, arr?) => Taro.getStorageSync(k) || arr || []
 const tabs = gs('tabs', ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']) // 默认的小组idArr
 const importantList = gs('importantList')
 const blackList = gs('blackList')
 const cacheObj = {} // state.cache的对象版本，用于优化抓包，判断某些数据是否已经请求过了；以及记录翻页数据
-
-// 数据打点
-wx.reportAnalytics('get_filed_data', {
-  group_list: tabs.join(','),
-  important_list: importantList.join(','),
-  black_list: blackList.join(','),
-});
 
 
 class Index extends Component {
@@ -76,7 +69,7 @@ class Index extends Component {
     }
 
     showLoading()
-    util.crawlToDomOnBatch(urlArr, (root, i, stop) => {
+    utils.crawlToDomOnBatch(urlArr, (root, i, stop) => {
 
       const { cache, activeTab } = this.state;
       const domList = root.querySelectorAll('table.olt tr').slice(1); // 获取table每一行
@@ -189,11 +182,19 @@ class Index extends Component {
     }
   }
 
-  handleFieldChange = util.debounce((field, val) => {
+  handleFieldChange = utils.debounce((field, val) => {
     // 分割成数组 、 替换掉前后空格 、 过滤空字符串
     val = val.split(/,|，/).map(s => s.trim()).filter(s => s)
     this.setState({ [field]: val })
     Taro.setStorage({key: field, data: val})
+
+    // 数据打点
+    utils.log('0', {
+      group_list: this.state.tabs.join(','),
+      important_list: this.state.importantList.join(','),
+      black_list: this.state.blackList.join(','),
+    })
+
   }, 2000)
 
   handleTabClick = (i) => {

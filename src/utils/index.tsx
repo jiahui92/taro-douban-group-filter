@@ -1,6 +1,8 @@
 import Taro from '@tarojs/taro'
 // import { parse, HTMLElement } from 'node-html-parser/dist/umd/index.js'
 import { parse, HTMLElement } from 'node-html-parser' // 这个最终没有被uglify压缩，因为不支持压缩es6，待后续taro更换压缩器后即可修复
+import {platform} from './platform'
+import {log} from './logger'
 
 /**
  * 包含错误兜底和提示的Taro.request函数
@@ -78,31 +80,10 @@ export const debounce = (callback, delay) => {
   }
 }
 
-export let xcx
-// 在这里抹平掉所有平台的api调用
-(() => {
-  let platform
-  const TYPE = Taro.ENV_TYPE
-  switch (Taro.getEnv()) {
-    case TYPE.ALIPAY: {
-      platform = my
-      break
-    }
-    default: platform = wx
-  }
 
-  xcx = {...platform}
-  xcx.setClipboardData = (text, success) => {
-    const fn = platform.setClipboardData || platform.setClipboard // 支付宝是setClipboard
-    fn({
-      text,
-      data: text,
-      success
-    })
-  }
-})()
 
 
 export default {
-  request, crawlToDom, crawlToDomOnBatch, debounce, xcx
+  request, crawlToDom, crawlToDomOnBatch, debounce,
+  platform, log
 }

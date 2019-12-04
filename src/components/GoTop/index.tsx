@@ -3,13 +3,13 @@ import './index.scss'
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components';
 import FixedBtn from '../FixedBtn'
-import util from '../../util'
+import utils from '../../utils'
 
 class Comp extends Component {
 
   goTop = () => {
 
-    util.xcx.pageScrollTo({
+    utils.platform.pageScrollTo({
       scrollTop: 0
     })
   }

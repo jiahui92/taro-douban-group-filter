@@ -3,7 +3,7 @@ import './index.scss'
 import { ComponentType } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 
-import util from '../../util'
+import utils from '../../utils'
 
 import { View, RichText } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
@@ -25,7 +25,7 @@ class Index extends Component {
 
     Taro.showLoading({ title: '加载中' })
 
-    util.crawlToDom(`https://m.douban.com/group/topic/${this.$router.params.cId}/`).then(root => {
+    utils.crawlToDom(`https://m.douban.com/group/topic/${this.$router.params.cId}/`).then(root => {
 
       Taro.hideLoading()
 
@@ -68,7 +68,7 @@ class Index extends Component {
     const cId = this.$router.params.cId
     const data = type === 'app' ? `https://www.douban.com/doubanapp/dispatch?copy_open=1&amp;from=mdouban&amp;download=1&amp;model=B&amp;copy=1&amp;page=&amp;channel=m_ad_nav_group_topic&amp;uri=%2Fgroup%2Ftopic%2F${cId}` : `https://m.douban.com/group/topic/${cId}/`
 
-    util.xcx.setClipboardData(data, () => {
+    utils.platform.setClipboardData(data, () => {
       Taro.showToast({
         title: '链接复制成功，请粘贴到浏览器打开',
         icon: 'none',
