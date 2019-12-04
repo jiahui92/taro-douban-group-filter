@@ -1,9 +1,9 @@
 import './index.scss'
 
 import Taro, { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components';
-import { AtFab, AtIcon } from 'taro-ui';
-import { ReactElement } from 'react';
+import { View } from '@tarojs/components'
+import { AtFab, AtIcon } from 'taro-ui'
+import { ReactElement } from 'react'
 
 interface Comp {
   props: {

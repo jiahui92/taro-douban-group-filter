@@ -13,12 +13,12 @@ if (!_userId) {
 }
 
 // 打点
-export function log (_eventId = '', data = {}) {
+export function log (_event = '', data = {}) {
   return Taro.request({
-    url: 'https://api.guangjun.club/logs',
+    url: 'https://api.guangjun.club/log',
     method: 'POST',
     data: {
-      _eventId,
+      _event,
       _userId,
       _timestamp: new Date().getTime(),
       _platform: platform.name,

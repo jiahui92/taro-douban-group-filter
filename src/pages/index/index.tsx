@@ -9,13 +9,13 @@ import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
+import ImportGroup from './components/ImportGroup'
 
 const MAX_PAGE = 2 // 一次加载页数
 const PAGE_SIZE = 25 // 每页item个数，该值不可调
-const gs = (k, arr?) => Taro.getStorageSync(k) || arr || []
-const tabs = gs('tabs', ['beijingzufang', 'shanghaizufang', 'gz_rent', 'szsh']) // 默认的小组idArr
-const importantList = gs('importantList')
-const blackList = gs('blackList')
+const gs = (k, defaultVal?) => Taro.getStorageSync(k) || defaultVal || []
+const tabs = gs('tabs')
+const groupMsg = gs('groupMsg', {})
 const cacheObj = {} // state.cache的对象版本，用于优化抓包，判断某些数据是否已经请求过了；以及记录翻页数据
 
 
@@ -31,8 +31,8 @@ class Index extends Component {
     tabs, // 小组的tabs数组
     cache: {}, // 缓存接口数据
     isShowAgent: false, // 是否显示中介信息
-    importantList, // 置顶名单
-    blackList, // 黑名单
+    importantList: gs('importantList'), // 置顶名单
+    blackList: gs('blackList'), // 黑名单
     visitedContentIdArr: gs('visitedContentIdArr'), // mock a:visited，记录访问过的a标签
   }
 
@@ -45,6 +45,8 @@ class Index extends Component {
     const {cache, activeTab} = this.state
     const isPrepend = fetchType == 'prepend' // 是否已经有缓存了，追加请求数据，比如点击刷新按钮时
     const list = cache[activeTab] || []
+
+    if (!activeTab) return
     
     if (!cacheObj[activeTab]) cacheObj[activeTab] = { page: MAX_PAGE }
     const co = cacheObj[activeTab]
@@ -72,8 +74,17 @@ class Index extends Component {
     utils.crawlToDomOnBatch(urlArr, (root, i, stop) => {
 
       const { cache, activeTab } = this.state;
-      const domList = root.querySelectorAll('table.olt tr').slice(1); // 获取table每一行
 
+      // 记录小组名称
+      if (!groupMsg[activeTab]) {
+        groupMsg[activeTab] = {
+          id: activeTab,
+          name: root.querySelector('title').text.trim(),
+        }
+        Taro.setStorage({ key: 'groupMsg', data: groupMsg })
+      }
+
+      const domList = root.querySelectorAll('table.olt tr').slice(1); // 获取table每一行
       domList.forEach(item => {
         const arr = item.querySelectorAll('a');
         const $title = arr[0]
@@ -178,26 +189,34 @@ class Index extends Component {
       name: field,
       value: (this.state[field] || []).join(','),
       placeholder: '请使用逗号分隔多个输入',
-      onChange: this.handleFieldChange.bind(this, field)
+      onChange: this.onFieldChange.bind(this, field)
     }
   }
 
-  handleFieldChange = utils.debounce((field, val) => {
+  onFieldChange = utils.debounce((field, val) => {
+    const {tabs, importantList, blackList, activeTab} = this.state
+
     // 分割成数组 、 替换掉前后空格 、 过滤空字符串
     val = val.split(/,|，/).map(s => s.trim()).filter(s => s)
+    
+    // 如果更新tabs之后，activeTab被删掉了，则重置为第一个值，并重新请求
+    if (field === 'tabs' && val.indexOf(activeTab) === -1) {
+      this.setState({ activeTab: val[0] }, this.fetchList)
+    }
+
     this.setState({ [field]: val })
     Taro.setStorage({key: field, data: val})
 
     // 数据打点
-    utils.log('0', {
-      group_list: this.state.tabs.join(','),
-      important_list: this.state.importantList.join(','),
-      black_list: this.state.blackList.join(','),
+    utils.log('userInputField', {
+      groupList: tabs.join(','),
+      importantList: importantList.join(','),
+      blackList: blackList.join(','),
     })
 
   }, 2000)
 
-  handleTabClick = (i) => {
+  onTabClick = (i) => {
     const {tabs, cache} = this.state
     const activeTab = tabs[i]
     this.setState({activeTab}, () => {
@@ -206,7 +225,7 @@ class Index extends Component {
     })
   }
 
-  handleNavigatorClick = (t) => {
+  onNavigatorClick = (t) => {
     Taro.navigateTo({url: t.xcxLink})
 
     const data = this.state.visitedContentIdArr
@@ -218,6 +237,23 @@ class Index extends Component {
     this.setState({visitedContentIdArr: data})
   }
 
+  onImportGroup = (data = []) => {
+    const {tabs} = this.state
+    const arr = []
+
+    data.forEach(d => {
+      if (tabs.indexOf(d) === -1) {
+        arr.push(d)
+      }
+    })
+
+    const c = data.length - arr.length
+    const text = c ? `已存在${c}个，` : ''
+    utils.showToast(`${text}成功导入${arr.length}个小组`)
+
+    this.onFieldChange('tabs', tabs.concat(arr).join(','))
+  }
+
   render () {
     const { tabs, activeTab } = this.state
 
@@ -227,13 +263,13 @@ class Index extends Component {
     list.splice(mid, 0, { isBtnNextPage: true })
 
     // 帖子列表html
-    const listHtml = list.map(t => (
+    const listHtml = list.length > 1 ? list.map(t => (
       t.isBtnNextPage ?
       <View className='item btn-next-page' onClick={() => this.fetchList('nextPage')}>
         <AtIcon value='reload' size={12} />
         加载下一页
       </View> :
-      <View key={t.contentId} className='item' onClick={this.handleNavigatorClick.bind(this, t)}>
+      <View key={t.contentId} className='item' onClick={this.onNavigatorClick.bind(this, t)}>
         <View className={t.className + ' title'}>{ t.title }</View>
         <View className='extra-info'>
           <View>{t.authorName}</View>
@@ -248,27 +284,45 @@ class Index extends Component {
           <View className='time'>{t.timeStr}</View>
         </View>
       </View>
-    ))
+    )) : (
+      <View className='list-empty-tip'>
+        <View className='big-icon'><AtIcon value="bell" size="80" /></View>
+        <View>请先使用右上方 "<AtIcon value="download" />按钮" 导入小组</View>
+        <View>其余问题可在右下方 “使用说明” 查看</View>
+      </View>
+    )
+    
+    const len = list.length - 1 // 减掉的一个是“下一页”按钮
+    const seaechTipHtml = len > 0 ? (
+      <View className='search-result-tip'>
+          <View className='btn-refresh' onClick={() => this.fetchList('prepend')}>刷新列表</View>
+          ，共有 {len} 个搜索结果
+        </View>
+    ) : ''
+
+    const tabList = tabs.map(id => {
+      const t = groupMsg[id] || {} // 查看是否已经存储了groupName
+      return {title: t.name ? `[${id}] ${t.name}` : id}
+    })
 
     return (
       <View className='page-index'>
 
         <View>
-          <AtInput {...this.getInputProps('tabs')} title='订阅小组' />
+          <AtInput {...this.getInputProps('tabs')} title='订阅小组'>
+            <ImportGroup callback={this.onImportGroup} />
+          </AtInput>
           <AtInput {...this.getInputProps('importantList')} title='置顶关键词' />
           <AtInput {...this.getInputProps('blackList')} title='屏蔽关键词' />
           <AtSwitch title='显示中介信息' onChange={isShowAgent => this.setState({isShowAgent})} />
-          <View className='search-result-tip'>
-            <View className='btn-refresh' onClick={() => this.fetchList('prepend')}>刷新列表</View>
-            ，共有 {list.length} 个搜索结果
-          </View>
+          {seaechTipHtml}
         </View>
 
         <AtTabs
           scroll={tabs.length > 3}
           current={tabs.indexOf(activeTab)}
-          tabList={tabs.map(title => ({title}))}
-          onClick={this.handleTabClick}
+          tabList={tabList}
+          onClick={this.onTabClick}
         />
 
         <View className='list'>{listHtml}</View>

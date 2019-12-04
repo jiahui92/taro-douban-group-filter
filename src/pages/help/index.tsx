@@ -20,8 +20,8 @@ class Index extends Component {
       <View className='page-help'>
 
         <AtCard title='订阅新小组'>
-          <View>➣ 需要订阅新小组的id可以从豆瓣PC小组主页的url上获取</View>
-          <View>➣ 比如“北京租房”小组的PC主页为“https://www.douban.com/group/beijingzufang/”, 则小组id为“beijingzufang”，然后填入“订阅小组”栏</View>
+          <View>➣ 快速导入：点击输入框右侧的“导入”按钮</View>
+          <View>➣ 自定义：从豆瓣PC小组主页的url上获取，比如“北京租房”小组的PC主页为“https://www.douban.com/group/beijingzufang/”, 则小组id为“beijingzufang”，然后填入“订阅小组”栏</View>
         </AtCard>
 
         <AtCard title='常用置顶／过滤关键词'>

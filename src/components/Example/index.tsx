@@ -1,8 +1,7 @@
 import './index.scss'
 
-import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components';
+import { View } from '@tarojs/components'
 
 class Comp extends Component {
 
@@ -17,6 +16,9 @@ class Comp extends Component {
   componentDidMount () {
   }
 
+  onClick = () => {
+  }
+
   render () {
     const {text} = this.state
 
@@ -28,4 +30,4 @@ class Comp extends Component {
   }
 }
 
-export default Comp  as ComponentType
+export default Comp

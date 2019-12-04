@@ -80,10 +80,19 @@ export const debounce = (callback, delay) => {
   }
 }
 
+export const showToast = (title: string) => {
+  Taro.showToast({
+    title,
+    icon: 'none',
+    duration: 3000
+  })
+}
+
 
 
 
 export default {
-  request, crawlToDom, crawlToDomOnBatch, debounce,
+  request, crawlToDom, crawlToDomOnBatch,
+  debounce, showToast, 
   platform, log
 }
