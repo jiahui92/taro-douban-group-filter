@@ -183,18 +183,26 @@ class Index extends Component {
     return lodash.sortBy(cList, (o) => o.isImportant ? 0 : 1)
   }
 
+  // 每个filed都必须拥有自己的debounceFn，共用会有bug的，比如天晚“置顶关键词”，在2s内再马上填“屏蔽关键词”，那么“置顶关键词”的onChange会被取消执行
+  onChangeMap = {}
   // Input筛选组件的通用props
   getInputProps = (field) => {
+    const onChangeMap = this.onChangeMap
+    if (!onChangeMap[field]) {
+      onChangeMap[field] = utils.debounce(this.onFieldChange.bind(this, field), 2000)
+    }
+
     return {
       name: field,
       value: (this.state[field] || []).join(','),
       placeholder: '请使用逗号分隔多个输入',
-      onChange: this.onFieldChange.bind(this, field)
+      onChange: onChangeMap[field],
+      // onBlur: this.onFieldChange.bind(this, field)
     }
   }
 
-  onFieldChange = utils.debounce((field, val) => {
-    const {tabs, importantList, blackList, activeTab} = this.state
+  onFieldChange = (field, val) => {
+    const {activeTab} = this.state
 
     // 分割成数组 、 替换掉前后空格 、 过滤空字符串
     val = val.split(/,|，/).map(s => s.trim()).filter(s => s)
@@ -204,17 +212,17 @@ class Index extends Component {
       this.setState({ activeTab: val[0] }, this.fetchList)
     }
 
-    this.setState({ [field]: val })
-    Taro.setStorage({key: field, data: val})
-
-    // 数据打点
-    utils.log('userInputField', {
-      groupList: tabs.join(','),
-      importantList: importantList.join(','),
-      blackList: blackList.join(','),
+    this.setState({ [field]: val }, () => {
+      const {tabs, importantList, blackList} = this.state
+      // 数据打点
+      utils.log('userInputField', {
+        groupList: tabs.join(','),
+        importantList: importantList.join(','),
+        blackList: blackList.join(','),
+      })
     })
-
-  }, 2000)
+    Taro.setStorage({key: field, data: val})
+  }
 
   onTabClick = (i) => {
     const {tabs, cache} = this.state
@@ -251,7 +259,10 @@ class Index extends Component {
     const text = c ? `已存在${c}个，` : ''
     utils.showToast(`${text}成功导入${arr.length}个小组`)
 
-    this.onFieldChange('tabs', tabs.concat(arr).join(','))
+    // bugfix: 延时2s执行，正常情况下，点击importBtn后，失焦会触发debound.onFieldChange；极端情况下点击importBtn后，在2s内马上选好导入小组，会使onImportGroup.onFieldChange的执行顺序先于debound.onFieldChange，所以这里setTimeout(2000ms)来保证先执行debound.onFieldChange，再执行onImportGroup.onFieldChange
+    setTimeout(() => {
+      this.onFieldChange('tabs', tabs.concat(arr).join(','))
+    }, 2000)
   }
 
   render () {
@@ -319,7 +330,7 @@ class Index extends Component {
         </View>
 
         <AtTabs
-          scroll={tabs.length > 3}
+          scroll={true}
           current={tabs.indexOf(activeTab)}
           tabList={tabList}
           onClick={this.onTabClick}

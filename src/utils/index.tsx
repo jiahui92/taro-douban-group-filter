@@ -80,11 +80,12 @@ export const debounce = (callback, delay) => {
   }
 }
 
-export const showToast = (title: string) => {
+export const showToast = (title: string, config?: Object) => {
   Taro.showToast({
     title,
     icon: 'none',
-    duration: 3000
+    duration: 3000,
+    ...(config || {})
   })
 }
 
