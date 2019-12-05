@@ -7,7 +7,7 @@ import { AtIcon, AtActionSheet, AtActionSheetItem } from 'taro-ui'
 
 interface Comp {
   props: {
-    callback: Function | any,
+    callback: Function,
   }
 }
 
@@ -37,22 +37,23 @@ class Comp extends Component {
     }
 
     if (recommendData.length) {
+      // 走缓存
       finallyFn(recommendData)
     } else {
       Taro.request({
         url: 'https://api.guangjun.club/doubanGroupFilter/getRecommendGroups'
-      }).then((data) => {
-        // todo: 试一下这里是不是可以不传值
-        return data
-      }).finally((data = '') => {
-        // todo 默认值和服务器取值
+      }).then(({data}) => {
         finallyFn(data)
-      })
+      }).catch(finallyFn)
     }
   }
 
+  onClose = () => {
+    this.setState({ isOpened: false })
+  }
+
   onItemClick = (data) => {
-    this.setState({ isOpened: false})
+    this.onClose()
     this.props.callback(data)
   }
 
@@ -67,7 +68,7 @@ class Comp extends Component {
       <View className='comp-import-group'>
         <AtIcon value="download" onClick={this.onBtnClick} />
 
-        <AtActionSheet title='请选择要导入的城市小组' isOpened={isOpened}>
+        <AtActionSheet title='请选择要导入的城市小组' isOpened={isOpened} onClose={this.onClose}>
           {list}
         </AtActionSheet>
       </View>

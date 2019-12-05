@@ -11,7 +11,7 @@ import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 import ImportGroup from './components/ImportGroup'
 
-const MAX_PAGE = 2 // 一次加载页数
+const MAX_PAGE = 10 // 一次加载页数
 const PAGE_SIZE = 25 // 每页item个数，该值不可调
 const gs = (k, defaultVal?) => Taro.getStorageSync(k) || defaultVal || []
 const tabs = gs('tabs')
@@ -79,7 +79,7 @@ class Index extends Component {
       if (!groupMsg[activeTab]) {
         groupMsg[activeTab] = {
           id: activeTab,
-          name: root.querySelector('title').text.trim(),
+          name: root.querySelector('title').text.trim().replace(/小组$/, ''),
         }
         Taro.setStorage({ key: 'groupMsg', data: groupMsg })
       }
