@@ -1,7 +1,6 @@
 import './index.scss'
 
 import { observer, inject } from '@tarojs/mobx'
-import { ComponentType } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View } from '@tarojs/components';
 
@@ -31,4 +30,4 @@ class Index extends Component {
   }
 }
 
-export default Index  as ComponentType
+export default Index

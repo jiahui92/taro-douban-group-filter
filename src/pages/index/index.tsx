@@ -11,7 +11,7 @@ import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 import ImportGroup from './components/ImportGroup'
 
-const MAX_PAGE = 10 // 一次加载页数
+const MAX_PAGE = 2 // 一次加载页数
 const PAGE_SIZE = 25 // 每页item个数，该值不可调
 const gs = (k, defaultVal?) => Taro.getStorageSync(k) || defaultVal || []
 const tabs = gs('tabs')
@@ -89,8 +89,9 @@ class Index extends Component {
         const arr = item.querySelectorAll('a');
         const $title = arr[0]
         const $author = arr[1]
+        const authorId = ($author.attributes.href.match(/(\w+)\/?$/) || [])[1] || ''
         const link = $title.attributes.href
-        const contentId = link.match(/\d+/)[0];
+        const contentId = link.match(/\d+/)[0]
         const timeStr = item.querySelector('.time').text
 
         const d = {
@@ -99,6 +100,7 @@ class Index extends Component {
           // link,
           title: $title.attributes.title,
           authorName: $author.text,
+          authorId,
           // authorLink: $author.attributes.href,
           replyNum: Number(item.querySelectorAll('td')[2].text)
         }
@@ -158,7 +160,7 @@ class Index extends Component {
           /(豆友\d+)|管家|租房|公寓|房屋|出租/.test(an) || // 名称包含“豆友xxx”等
           phoneTester.test(an) || // 名称包含手机号
           phoneTester.test(item.title) // 标题包含手机号
-        const xcxLink = `/pages/content/index?cId=${item.contentId}`
+        const xcxLink = `/pages/content/index?cId=${item.contentId}&authorId=${item.authorId}`
         const clArr: string[] = []
         if (isImportant) clArr.push('important')
         if (visitedContentIdArr.indexOf(item.contentId) !== -1) clArr.push('visited')

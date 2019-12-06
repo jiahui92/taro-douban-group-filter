@@ -1,15 +1,14 @@
 import './index.scss'
 
-import { ComponentType } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 
 import utils from '../../utils'
+import parse from '@jiahuix/mini-html-parser2'
 
 import { View, RichText } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import GoTop from '../../components/GoTop'
 
-import parse from '@jiahuix/mini-html-parser2'
 
 class Index extends Component {
 
@@ -19,6 +18,7 @@ class Index extends Component {
 
   state: any = {
     nodes: [],
+    portraitData: {},
   }
 
   componentDidMount () {
@@ -61,6 +61,40 @@ class Index extends Component {
       })
       
     })
+
+    this.getAuthorPortrait(this.$router.params.authorId)
+  }
+
+  // 计算作者用户画像
+  getAuthorPortrait = (authorId) => {
+    if (!authorId) return
+
+    Taro.request({
+      url: `https://m.douban.com/rexxar/api/v2/user/${authorId}?ck=rbW0&for_mobile=1`
+    }).then((res) => {
+      const {portraitData} = this.state
+      const d = res.data || {};
+      Object.assign(portraitData, {
+        regTime: d.reg_time.slice(0, 10),
+        statusCount: d.statuses_count,
+        bookCount: d.book_collected_count,
+        movieCount: d.movie_collected_count
+      })
+      this.setState({portraitData})
+    })
+
+    utils.crawlToDom(`https://www.douban.com/group/people/${authorId}/joins`).then((root) => {
+      const list = (root.querySelectorAll('.group-list li .info .title a') || [])
+      const rentCount = list.filter((item) => item.text.indexOf('租房') !== -1).length
+      const {portraitData} = this.state
+      Object.assign(portraitData, {
+        rentCount,
+        joinedGroupCount: list.length
+      })
+      this.setState({portraitData})
+    }).catch((e) => {
+      debugger
+    })
   }
 
   copyLink = (type) => {
@@ -75,9 +109,22 @@ class Index extends Component {
 
   render () {
     const {nodes} = this.state
+    const {regTime, statusCount, bookCount, movieCount, rentCount, joinedGroupCount} = this.state.portraitData
 
     return (
       <View className='page-content'>
+        <View>
+          作者用户画像
+          <View>正在加载</View>
+          <View>注册时间：{regTime}</View>
+          <View>租房类小组／加入小组：{rentCount} / {joinedGroupCount}</View>
+          <View>广播 {statusCount}  已读 {bookCount}  已看 {movieCount}</View>
+          <View>标记为中介（请求接口）</View>
+          <View>帮助说明按钮：各类指标的意义，什么样的表示为中介</View>
+        </View>
+
+        <View>注册时间较早、租房类小组占比较多、广播／已读／已看较少</View>
+
         <View className='btn-line'>
           <AtButton type='primary' onClick={this.copyLink}>使用浏览器打开查看完整内容</AtButton>
           {/* <AtButton type='secondary' onClick={this.copyLink}>使用浏览器打开</AtButton> */}
@@ -93,4 +140,4 @@ class Index extends Component {
   }
 }
 
-export default Index  as ComponentType
+export default Index
