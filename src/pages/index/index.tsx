@@ -10,8 +10,9 @@ import { AtIcon, AtInput, AtSwitch, AtTabs } from 'taro-ui'
 import FixedBtn from '../../components/FixedBtn'
 import GoTop from '../../components/GoTop'
 import ImportGroup from './components/ImportGroup'
+import EmptyList from './components/EmptyList'
 
-const MAX_PAGE = 2 // 一次加载页数
+const MAX_PAGE = 10 // 一次加载页数
 const PAGE_SIZE = 25 // 每页item个数，该值不可调
 const gs = (k, defaultVal?) => Taro.getStorageSync(k) || defaultVal || []
 const tabs = gs('tabs')
@@ -32,7 +33,7 @@ class Index extends Component {
     cache: {}, // 缓存接口数据
     isShowAgent: false, // 是否显示中介信息
     importantList: gs('importantList'), // 置顶名单
-    blackList: gs('blackList'), // 黑名单
+    blackList: gs('blackList', ['关键词1', '关键词2', '关键词3']), // 黑名单
     visitedContentIdArr: gs('visitedContentIdArr'), // mock a:visited，记录访问过的a标签
   }
 
@@ -197,7 +198,7 @@ class Index extends Component {
     return {
       name: field,
       value: (this.state[field] || []).join(','),
-      placeholder: '请使用逗号分隔多个输入',
+      placeholder: '多个输入使用逗号分隔',
       onChange: onChangeMap[field],
       // onBlur: this.onFieldChange.bind(this, field)
     }
@@ -297,13 +298,7 @@ class Index extends Component {
           <View className='time'>{t.timeStr}</View>
         </View>
       </View>
-    )) : (
-      <View className='list-empty-tip'>
-        <View className='big-icon'><AtIcon value="bell" size="80" /></View>
-        <View>请先使用右上方 "<AtIcon value="download" />按钮" 导入小组</View>
-        <View>其余问题可在右下方 “使用说明” 查看</View>
-      </View>
-    )
+    )) : <EmptyList />
     
     const len = list.length - 1 // 减掉的一个是“下一页”按钮
     const seaechTipHtml = len > 0 ? (
@@ -322,7 +317,7 @@ class Index extends Component {
       <View className='page-index'>
 
         <View>
-          <AtInput {...this.getInputProps('tabs')} title='订阅小组'>
+          <AtInput {...this.getInputProps('tabs')} title='订阅小组id' placeholder='输入id或用右侧按钮导入'>
             <ImportGroup callback={this.onImportGroup} />
           </AtInput>
           <AtInput {...this.getInputProps('importantList')} title='置顶关键词' />
