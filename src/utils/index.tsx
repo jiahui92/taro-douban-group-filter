@@ -7,13 +7,15 @@ import {log} from './logger'
 /**
  * 包含错误兜底和提示的Taro.request函数
  */
-export function request (param: Taro.request.Param) {
+function request (param: Taro.request.Param, isShowError?) {
 
   // 兜底错误处理
   function fail (e) {
     Taro.hideLoading()
-    // 对用户抛出友好一点的错误提示，而不是e.message
-    Taro.showToast({ icon: 'none', mask: true, title: '操作可能太频繁，请稍后重试或尝试切换网络到4G／Wifi' })
+    if (isShowError) {
+      // 对用户抛出友好一点的错误提示，而不是e.message
+      Taro.showToast({ icon: 'none', mask: true, title: '操作可能太频繁，请稍后重试或尝试切换网络到4G／Wifi' })
+    }
     throw new Error(e.message || e.errMsg) // errMsg是Taro抛出来的
   }
 
@@ -29,13 +31,13 @@ export function request (param: Taro.request.Param) {
  * 爬虫并返回解析后的dom
  * @param url 
  */
-export function crawlToDom (url: string) {
+export function crawlToDom (url: string, isShowError = true) {
   return request({
     url,
     header: {
       'content-type': 'text/html'
     }
-  }).then((res: any) => {
+  }, isShowError).then((res: any) => {
     return parse(res.data) as HTMLElement
   })
 }

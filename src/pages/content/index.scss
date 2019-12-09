@@ -1,13 +1,23 @@
 .page-content {
-  padding: 21px;
+  padding: 21px 21px 50px 21px;
 
-  .btn-line {
-    display: flex;
-    margin-bottom: 30px;
+  .portrait {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 20px 20px 20px 40px;
+    margin: 20px 0 100px 0;
+    font-size: 30px;
 
-    at-button {
-      flex: 1;
-      margin: 0 21px;
+    .title {
+      font-size: 35px;
+      margin-left: -20px;
+      margin-bottom: 10px;
+    }
+
+    .val {
+      display: inline-block;
+      margin-right: 30px;
+      line-height: 50px;
     }
   }
 }
