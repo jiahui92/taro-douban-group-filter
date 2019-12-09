@@ -110,7 +110,7 @@ class Index extends Component {
     Taro.showModal({
       showCancel: false,
       confirmColor: '#4e73ba',
-      content: '极可能是中介的情况：注册时间在一个月内、加入的小组大多是租房的、较少的广播和已看已读',
+      content: '极可能是中介的情况：最近注册的账号、加入的小组大多是租房的、较少的广播和已看已读',
     })
   }
 
