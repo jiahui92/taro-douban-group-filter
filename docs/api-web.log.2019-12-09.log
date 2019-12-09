@@ -1,0 +1,111 @@
+ ！！！！！！！！！！！！！！！！！！！！！正常用户
+{
+  2019-12-09 18:01:55,258 INFO 32662 [-/127.0.0.1/-/1ms GET /logger/log?_event=userInputField&_userId=16ed5bc5bc8-41efa5396d6&_platform=WEAPP&_appName=douban-group-filter&groupList=beijingzufang%2Czhufang%2C26926&importantList=%E5%87%BA%E7%A7%9F&blackList=] { _event: 'userInputField',
+  _userId: '16ed5bc5bc8-41efa5396d6',
+  _platform: 'WEAPP',
+  _appName: 'douban-group-filter',
+  groupList: 'beijingzufang,zhufang,26926',
+  importantList: '出租',
+  blackList: '',
+  _timestamp: 1575885715258,
+  _timestr: 'Mon Dec 09 2019 18:01:55 GMT+0800 (China Standard Time)' }
+  2019-12-09 18:01:58,852 INFO 32662 [-/127.0.0.1/-/1ms GET /logger/log?_event=userInputField&_userId=16ed5bc5bc8-41efa5396d6&_platform=WEAPP&_appName=douban-group-filter&groupList=beijingzufang%2Czhufang%2C26926&importantList=&blackList=] { _event: 'userInputField',
+    _userId: '16ed5bc5bc8-41efa5396d6',
+    _platform: 'WEAPP',
+    _appName: 'douban-group-filter',
+    groupList: 'beijingzufang,zhufang,26926',
+    importantList: '',
+    blackList: '',
+    _timestamp: 1575885718852,
+    _timestr: 'Mon Dec 09 2019 18:01:58 GMT+0800 (China Standard Time)' }
+}
+
+
+！！！！！！！！！！！！！！！！！！！！！groupList的小组id输入了中文
+{
+  2019-12-09 02:47:39,238 INFO 32662 [-/127.0.0.1/-/0ms GET /logger/log?_event=userInputField&_userId=16ee6d64465-281662544ef&_platform=WEAPP&_appName=douban-group-filter&groupList=%E7%A7%9F%E6%88%BF%E5%AD%90%E4%BD%8F%E5%A4%A9%E6%B2%B3&importantList=&blackList=] { _event: 'userInputField',
+    _userId: '16ee6d64465-281662544ef',
+    _platform: 'WEAPP',
+    _appName: 'douban-group-filter',
+    groupList: '租房子住天河',
+    importantList: '',
+    blackList: '',
+    _timestamp: 1575830859238,
+    _timestr: 'Mon Dec 09 2019 02:47:39 GMT+0800 (China Standard Time)' }
+}
+
+
+ 
+
+ 
+！！！！！！！！！！！！！！！！！！！！！groupList的小组id输入了中文
+！！！！！！！！！！！！！！！！！！！！！importantList没有逗号分隔
+{
+  2019-12-09 13:59:44,989 INFO 32662 [-/127.0.0.1/-/1ms GET /logger/log?_event=userInputField&_userId=16ee93af020-5ab244eac19&_platform=WEAPP&_appName=douban-group-filter&groupList=%E8%B1%86%E7%93%A3%E7%A7%9F%E6%88%BF%2Cgz_rent%2Cgz020%2Ctianhezufang%2Cbeijingzufang%2Czhufang%2C26926&importantList=%E8%B6%8A%E7%A7%80%E5%8C%BA%E4%BD%8F%E6%88%BF%E4%B8%A4%E5%AE%A4%E4%B8%80%E5%8E%85%E6%95%B4%E7%A7%9F&blackList=] { _event: 'userInputField',
+  _userId: '16ee93af020-5ab244eac19',
+  _platform: 'WEAPP',
+  _appName: 'douban-group-filter',
+  groupList:
+   '豆瓣租房,gz_rent,gz020,tianhezufang,beijingzufang,zhufang,26926',
+  importantList: '越秀区住房两室一厅整租',
+  blackList: '',
+  _timestamp: 1575871184989,
+  _timestr: 'Mon Dec 09 2019 13:59:44 GMT+0800 (China Standard Time)' }
+}
+
+
+
+
+
+！！！！！！！！！！！！！！！！！！！！！importantList没有逗号分隔
+{
+    2019-12-09 08:55:56,774 INFO 32662 [-/127.0.0.1/-/0ms GET /logger/log?_event=userInputField&_userId=16ee5b88f8c-aae35a5aa2&_platform=WEAPP&_appName=douban-group-filter&groupList=beijingzufang&importantList=%E4%BA%AE%E9%A9%AC%E6%A1%A5&blackList=] { _event: 'userInputField',
+  _userId: '16ee5b88f8c-aae35a5aa2',
+  _platform: 'WEAPP',
+  _appName: 'douban-group-filter',
+  groupList: 'beijingzufang',
+  importantList: '亮马桥',
+  blackList: '',
+  _timestamp: 1575852956774,
+  _timestr: 'Mon Dec 09 2019 08:55:56 GMT+0800 (China Standard Time)' }
+  2019-12-09 08:55:58,979 INFO 32662 [-/127.0.0.1/-/0ms GET /logger/log?_event=userInputField&_userId=16ee5b88f8c-aae35a5aa2&_platform=WEAPP&_appName=douban-group-filter&groupList=beijingzufang&importantList=&blackList=] { _event: 'userInputField',
+    _userId: '16ee5b88f8c-aae35a5aa2',
+    _platform: 'WEAPP',
+    _appName: 'douban-group-filter',
+    groupList: 'beijingzufang',
+    importantList: '',
+    blackList: '',
+    _timestamp: 1575852958978,
+    _timestr: 'Mon Dec 09 2019 08:55:58 GMT+0800 (China Standard Time)' }
+  2019-12-09 08:56:03,295 INFO 32662 [-/127.0.0.1/-/1ms GET /logger/log?_event=userInputField&_userId=16ee5b88f8c-aae35a5aa2&_platform=WEAPP&_appName=douban-group-filter&groupList=beijingzufang&importantList=%E4%B8%89%E5%85%83%E6%A1%A5&blackList=] { _event: 'userInputField',
+    _userId: '16ee5b88f8c-aae35a5aa2',
+    _platform: 'WEAPP',
+    _appName: 'douban-group-filter',
+    groupList: 'beijingzufang',
+    importantList: '三元桥',
+    blackList: '',
+    _timestamp: 1575852963294,
+    _timestr: 'Mon Dec 09 2019 08:56:03 GMT+0800 (China Standard Time)' }
+}
+
+ 
+
+
+！！！！！！！！！！！！！！！！！！！！！！！！！！什么也没输入就走了？
+{
+    groupList: '豆瓣租房',
+  importantList: '',
+  blackList: '',
+  _timestamp: 1575884407468,
+  _timestr: 'Mon Dec 09 2019 17:40:07 GMT+0800 (China Standard Time)' }
+  2019-12-09 17:41:04,423 INFO 32662 [-/127.0.0.1/-/0ms GET /logger/log?_event=userInputField&_userId=16ed60cd570-6ce713ef519&_platform=WEAPP&_appName=douban-group-filter&groupList=&importantList=&blackList=] { _event: 'userInputField',
+    _userId: '16ed60cd570-6ce713ef519',
+    _platform: 'WEAPP',
+    _appName: 'douban-group-filter',
+    groupList: '',
+    importantList: '',
+    blackList: '',
+    _timestamp: 1575884464423,
+    _timestr: 'Mon Dec 09 2019 17:41:04 GMT+0800 (China Standard Time)' }
+}
+
