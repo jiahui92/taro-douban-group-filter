@@ -1,6 +1,5 @@
 import './index.scss'
 
-import { ComponentType } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import utils from '../../utils'
 import lodash from 'lodash/core'
@@ -232,7 +231,10 @@ class Index extends Component {
     const activeTab = tabs[i]
     this.setState({activeTab}, () => {
       // tabClick(tabClick有两种可能，刚开始加载和prepend)
-      this.fetchList(cache[activeTab] ? 'prepend' : '')
+      // cache[activeTab] ? this.fetchList( ? 'prepend' : '')
+      if (!cache[activeTab]) {
+        this.fetchList()
+      }
     })
   }
 
@@ -343,4 +345,4 @@ class Index extends Component {
   }
 }
 
-export default Index as ComponentType
+export default Index

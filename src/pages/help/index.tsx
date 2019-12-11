@@ -1,6 +1,5 @@
 import './index.scss'
 
-import { ComponentType } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View } from '@tarojs/components';
 import { AtCard } from 'taro-ui';
@@ -43,4 +42,4 @@ class Index extends Component {
   }
 }
 
-export default Index as ComponentType
+export default Index

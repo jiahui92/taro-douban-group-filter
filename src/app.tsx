@@ -1,8 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro'
-import { Provider } from '@tarojs/mobx'
-import Index from './pages/index'
+// import { Provider } from '@tarojs/mobx'
+// import counterStore from './store/counter'
 
-import counterStore from './store/counter'
+import Index from './pages/index'
 
 import 'taro-ui/dist/style/index.scss'
 
@@ -12,9 +12,9 @@ import 'taro-ui/dist/style/index.scss'
 //   require('nerv-devtools')
 // }
 
-const store = {
-  counterStore
-}
+// const store = {
+//   counterStore
+// }
 
 class App extends Component {
 
@@ -51,9 +51,10 @@ class App extends Component {
   // 请勿修改此函数
   render () {
     return (
-      <Provider store={store}>
-        <Index />
-      </Provider>
+      <Index />
+      // <Provider store={store}>
+      //   <Index />
+      // </Provider>
     )
   }
 }
