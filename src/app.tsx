@@ -1,10 +1,11 @@
+import 'taro-ui/dist/style/index.scss'
+
 import Taro, { Component, Config } from '@tarojs/taro'
 // import { Provider } from '@tarojs/mobx'
 // import counterStore from './store/counter'
-
 import Index from './pages/index'
+import utils from './utils'
 
-import 'taro-ui/dist/style/index.scss'
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -45,7 +46,9 @@ class App extends Component {
 
   componentDidHide () {}
 
-  componentDidCatchError () {}
+  componentDidCatchError (errMsg) {
+    utils.log('componentDidCatchError', { errMsg })
+  }
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
