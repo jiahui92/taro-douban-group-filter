@@ -185,7 +185,7 @@ class Index extends Component {
     return lodash.sortBy(cList, (o) => o.isImportant ? 0 : 1)
   }
 
-  // 每个filed都必须拥有自己的debounceFn，共用会有bug的，比如天晚“置顶关键词”，在2s内再马上填“屏蔽关键词”，那么“置顶关键词”的onChange会被取消执行
+  // 每个filed都必须拥有自己的debounceFn，共用会有bug的，比如填完“置顶关键词”，在2s内再马上填“屏蔽关键词”，那么“置顶关键词”的onChange会被取消执行
   onChangeMap = {}
   // Input筛选组件的通用props
   getInputProps = (field) => {
@@ -303,7 +303,7 @@ class Index extends Component {
     )) : <EmptyList />
     
     const len = list.length - 1 // 减掉的一个是“下一页”按钮
-    const seaechTipHtml = len > 0 ? (
+    const searchTipHtml = len > 0 ? (
       <View className='search-result-tip'>
           <View className='btn-refresh' onClick={() => this.fetchList('prepend')}>刷新列表</View>
           ，共有 {len} 个搜索结果
@@ -325,7 +325,7 @@ class Index extends Component {
           <AtInput {...this.getInputProps('importantList')} title='置顶关键词' />
           <AtInput {...this.getInputProps('blackList')} title='屏蔽关键词' />
           <AtSwitch title='显示中介信息' onChange={isShowAgent => this.setState({isShowAgent})} />
-          {seaechTipHtml}
+          {searchTipHtml}
         </View>
 
         <AtTabs
