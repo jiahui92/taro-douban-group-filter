@@ -1,7 +1,10 @@
 {
   "extends": ["taro"],
   "rules": {
-    "no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }],
+    "import/first": 0,
+    "react/sort-comp": 0,
+    // 使用ts来校验
+    "no-unused-vars": 0,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }]
   },
     "parser": "@typescript-eslint/parser",

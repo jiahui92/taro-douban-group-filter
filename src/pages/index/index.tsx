@@ -14,7 +14,7 @@ import EmptyList from './components/EmptyList'
 const MAX_PAGE = 10 // 一次加载页数
 const PAGE_SIZE = 25 // 每页item个数，该值不可调
 const gs = (k, defaultVal?) => Taro.getStorageSync(k) || defaultVal || []
-const tabs = gs('tabs')
+const tabsCache = gs('tabs')
 const groupMsg = gs('groupMsg', {})
 const cacheObj = {} // state.cache的对象版本，用于优化抓包，判断某些数据是否已经请求过了；以及记录翻页数据
 
@@ -27,8 +27,8 @@ class Index extends Component {
 
   state = {
     isLoading: false,
-    activeTab: tabs[0] || '', // 当前选中的Tab
-    tabs, // 小组的tabs数组
+    activeTab: tabsCache[0] || '', // 当前选中的Tab
+    tabs: tabsCache, // 小组的tabs数组
     cache: {}, // 缓存接口数据
     isShowAgent: false, // 是否显示中介信息
     importantList: gs('importantList'), // 置顶名单
@@ -72,8 +72,6 @@ class Index extends Component {
 
     showLoading()
     utils.crawlToDomOnBatch(urlArr, (root, i, stop) => {
-
-      const { cache, activeTab } = this.state;
 
       // 记录小组名称
       if (!groupMsg[activeTab]) {
@@ -198,6 +196,7 @@ class Index extends Component {
       name: field,
       value: (this.state[field] || []).join(','),
       placeholder: '多个输入使用逗号分隔',
+      maxLength: 10000, // 覆盖默认140
       onChange: onChangeMap[field],
       // onBlur: this.onFieldChange.bind(this, field)
     }
@@ -292,7 +291,7 @@ class Index extends Component {
           {
             t.isAgent ? (
               <View className='is-agent'>
-                <AtIcon value="blocked" size={16} />
+                <AtIcon value='blocked' size={16} />
                 疑似中介
               </View>
             ) : null
@@ -329,7 +328,7 @@ class Index extends Component {
         </View>
 
         <AtTabs
-          scroll={true}
+          scroll
           current={tabs.indexOf(activeTab)}
           tabList={tabList}
           onClick={this.onTabClick}
