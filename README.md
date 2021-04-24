@@ -48,7 +48,7 @@
 
 
 ## 启动
-* [安装Taro](https://nervjs.github.io/taro/docs/GETTING-STARTED.html)
+* [npm i -g @tarojs/cli@1.3.46](https://nervjs.github.io/taro/docs/1.x/GETTING-STARTED)
 * npm i
 * npm run dev:weapp
 * 微信开发者工具导入项目`./dist/weapp`
